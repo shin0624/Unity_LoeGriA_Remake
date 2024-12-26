@@ -150,7 +150,11 @@ public class EnemyController : MonoBehaviour
     private void SetState(Define.EnemyState NewState, string AnimationTrigger)// 상태변경 메서드
     {
         if (state != NewState) { state = NewState; Anim.SetTrigger(AnimationTrigger); }//불필요한 상태 변경을 최소화. 각각의 상태에 맞게 애니메이터의 트리거를 바꾸어준다
+   
+   
     }
+
+
 
     private void EnemySoundPlay()
     {

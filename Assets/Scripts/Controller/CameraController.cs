@@ -22,7 +22,7 @@ public class CameraController : MonoBehaviour
     private float yRotation;
     private float xRotation;
     public Camera cam;
-    public Vector3 fpvOffset = new Vector3(0.0f, 2.45f, -4.08f);
+    public Vector3 fpvOffset = new Vector3(0.0f, 2.026f, -4.756f);
 
     void Start()
     {
@@ -56,10 +56,6 @@ public class CameraController : MonoBehaviour
                 transform.position = _player.transform.position + _delta;//카메라 포지선 = 플레이어 포지션 + 방향벡터-->카메라가 플레이어를 따라 이동
                 transform.LookAt(_player.transform);//LookAt()함수 : 카메라가 무조건 플레이어의 좌표를 주시하도록 함
             }
-
-            
-
-
         }
         else if(_mode ==Define.CameraMode.FirstPersonView)
         {
