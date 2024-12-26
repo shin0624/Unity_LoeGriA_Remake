@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 7a1cb0febbaea37449c685baa8e49051
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 60386
+  packageName: Goblin Animated
+  packageVersion: 4.1.0f4
+  assetPath: Assets/Goblin/Materials/Body_D.mat
+  uploadId: 112306

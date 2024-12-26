@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: b811228e2d3034a4da3444c0ed6b9e6f
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 60386
+  packageName: Goblin Animated
+  packageVersion: 4.1.0f4
+  assetPath: Assets/Goblin/Materials/Shield_D.mat
+  uploadId: 112306
