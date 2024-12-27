@@ -12,9 +12,17 @@ public abstract class BaseHitHandler : MonoBehaviour, IDamageable
 
     protected virtual void Awake()
     {
-        animator = GetComponent<Animator>();
-        agent = GetComponent<NavMeshAgent>();
-        rb = GetComponent<Rigidbody>();
+    animator = GetComponent<Animator>();
+        if (animator == null)
+            Debug.LogError($"{gameObject.name} is missing an Animator component.");
+
+    agent = GetComponent<NavMeshAgent>();
+        if (agent == null)
+            Debug.LogError($"{gameObject.name} is missing a NavMeshAgent component.");
+
+    rb = GetComponent<Rigidbody>();
+        if (rb == null)
+            Debug.LogError($"{gameObject.name} is missing a Rigidbody component.");
     }
 
     public abstract void OnHit(float damage, Vector3 hitPoint, Vector3 hitNormal, float knockBackForce);

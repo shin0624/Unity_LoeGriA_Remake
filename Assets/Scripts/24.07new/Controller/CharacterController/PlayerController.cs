@@ -24,7 +24,8 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private float knockBackForce = 500.0f; // 넉백 힘
     [SerializeField] private LayerMask enemyLayer; // 적 레이어
     [SerializeField] private float attackDelay = 0.5f; // 공격 딜레이
-    
+//-----------파티클 등 이펙트 관련 변수들
+    [SerializeField] private PlayerAttackParticleManager particleManager;//플레이어 공격 이펙트 매니저
     
     private void Awake()
     {
@@ -116,12 +117,16 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    
-
     private IEnumerator AttackRountine()// Attack메서드를 코루틴으로 변경. 애니메이션 클립과 실제 공격 판정 간 간극 해소
     {
         SetState(Define.PlayerState.ATTACK, "ATTACK");
         Anim.SetBool("IsAttack", true);
+
+        //공격 파티클 호출
+        Vector3 particlePosition = transform.position + transform.forward * 1.5f; //파티클 위치를 검 위치로
+        Quaternion particleRotation = transform.rotation;
+        particleManager.PlayAttackParticle(particlePosition, particleRotation);//공격 파티클 재생
+
 
         yield return new WaitForSeconds(attackDelay);//공격 딜레이 변수값 만큼 대기 후 재생.
 
@@ -157,19 +162,6 @@ public class PlayerController : MonoBehaviour
                     damageable.OnHit(10.0f, hit.point, hit.normal, finalKnockbackForce);//10의 데미지, 공격이 적중한 위치, 충돌 표면의 법선벡터, 밀려나가는 힘의 크기를 매개변수로 전달.
                     // ray가 닿은 콜라이더를 가진 에너미의 idamageable 인터페이스를 찾아서 OnHit 메서드를 호출
                 }
-
-                // if(enemyRb!=null)
-                // {
-                //     //수평 방향으로 넉백 방향 계산
-                //     Vector3 knockbackDirection = (hit.collider.transform.position - transform.position).normalized;
-                //     knockbackDirection.y = 0;
-
-                //     //거리에 따른 넉백 힘 감소
-                //     float distanceMultiplier = 1 - (hit.distance / attackRange);
-                //     float finalKnockbackForce = knockBackForce * distanceMultiplier; // 타격 지점에서 멀 수록 넉백 효과가 약해짐
-
-                //     enemyRb.AddForce(knockbackDirection * finalKnockbackForce, ForceMode.Impulse);//넉백 적용. Impulse는 순간적인 힘을 가하는 모드   
-                // }
             }
         }
         yield return new WaitForSeconds(Anim.GetCurrentAnimatorStateInfo(0).length);//애니메이션 클립 길이만큼 대기

@@ -12,6 +12,7 @@ public class EnemyController : MonoBehaviour, IDamageable
     [SerializeField] private Rigidbody rb;
     private Define.EnemyState state;//에너미 상태 변수
     private float currentHitTime = 0.0f; // 현재 피격 시간
+    [SerializeField] private PlayerAttackParticleManager particleManager; // 에너미 공격 이펙트 매니저
  //----------------- 범위, 거리 변수 -----------------
     [SerializeField, Range(0f, 20.0f)] private float ChaseRange = 12.0f;//플레이어 추격 가능 범위
     [SerializeField, Range(0f, 20.0f)] private float DetectionRange = 8.0f;// 플레이어 탐지 거리
@@ -142,6 +143,7 @@ public class EnemyController : MonoBehaviour, IDamageable
             CurrentPathIndex = 0;// 현재위치를 담는 변수 초기화
             Agent.SetDestination(Path[CurrentPathIndex]);
         }
+        
     }
 
     public void OnHit(float damage, Vector3 hitPoint, Vector3 hitNormal, float knockbackForece)//피격 처리 메서드
@@ -152,7 +154,7 @@ public class EnemyController : MonoBehaviour, IDamageable
             StopCoroutine(hitCoroutine);//이전 Hit코루틴이 실행 중이라면 중지.
         }
         hitCoroutine = StartCoroutine(HitRoutine(hitPoint, knockbackForece));//새로운 피격 코루틴 시작
-
+        particleManager.PlayHitParticle(hitPoint,hitNormal);//피격 파티클 재생
     }
 
     private IEnumerator HitRoutine(Vector3 hitPoint, float knockbackForece)// Hit상태를 코루틴으로 관리. 이를 통해 피격 판정과 애니메이션 속도 간 동기화 및 피격 후 상태 고정을 예방한다.
@@ -166,6 +168,7 @@ public class EnemyController : MonoBehaviour, IDamageable
         {
             Vector3 knockbackDirection = (transform.position - hitPoint).normalized;
             knockbackDirection.y = 0;
+            
             rb.AddForce(knockbackDirection * knockbackForece, ForceMode.Impulse);
         }
         if(audioManager!=null && hitSound!=null)
