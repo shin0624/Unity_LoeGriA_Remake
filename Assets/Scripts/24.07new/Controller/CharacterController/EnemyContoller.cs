@@ -3,16 +3,12 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 
-public class EnemyController : MonoBehaviour
-{
-    //A* 알고리즘 적용 클래스
-    
-    [SerializeField]
-    private GameObject Player;
-    [SerializeField]
-    private NavMeshAgent Agent; // Bake된 NavMesh에서 활동할 에너미
-    [SerializeField]
-    private Animator Anim;
+public class EnemyController : MonoBehaviour, IDamageable
+{  
+    [SerializeField] private GameObject Player;
+    [SerializeField] private NavMeshAgent Agent; // Bake된 NavMesh에서 활동할 에너미
+    [SerializeField] private Animator Anim;
+    [SerializeField] private Rigidbody rb;
 
     [SerializeField, Range(0f, 20.0f)]
     private float ChaseRange = 12.0f;//플레이어 추격 가능 범위
@@ -20,6 +16,7 @@ public class EnemyController : MonoBehaviour
     private float DetectionRange = 8.0f;// 플레이어 탐지 거리
     [SerializeField, Range(0f, 20.0f)]
     private float AttackRange = 2.0f;// 공격 가능 범위
+    [SerializeField] private float hitRecoveryTime = 0.5f; // 피격 후 회복 시간
 
     private Define.EnemyState state;//에너미 상태 변수
     private float DistanceToPlayer;//플레이어와의 거리를 저장할 변수
@@ -28,6 +25,7 @@ public class EnemyController : MonoBehaviour
     private int CurrentPathIndex = 0;// 에너미가 현재 이동중인 경로 지점의 인덱스. 처음에는 Path[0]으로 이동.
 
     [SerializeField] private AudioSource Ado;
+    private float currentHitTime = 0.0f; // 현재 피격 시간
 
     private void Start()
     {
@@ -36,6 +34,7 @@ public class EnemyController : MonoBehaviour
         Agent = GetComponent<NavMeshAgent>();
         Agent.isStopped = true;
         Ado = GetComponent<AudioSource>();
+        rb = GetComponent<Rigidbody>();
 
         BeginPatrol();//처음에 탐지 시작
     }
@@ -54,6 +53,9 @@ public class EnemyController : MonoBehaviour
                 break;
             case Define.EnemyState.ATTACK:
                 UpdateAttack();//플레이어를 공격
+                break;
+            case Define.EnemyState.HIT:
+                UpdateHit();// 공격 당했을 때 상태 추가
                 break;
         }
     }
@@ -149,17 +151,50 @@ public class EnemyController : MonoBehaviour
 
     private void SetState(Define.EnemyState NewState, string AnimationTrigger)// 상태변경 메서드
     {
-        if (state != NewState) { state = NewState; Anim.SetTrigger(AnimationTrigger); }//불필요한 상태 변경을 최소화. 각각의 상태에 맞게 애니메이터의 트리거를 바꾸어준다
-   
-   
+        //if (state != NewState) { state = NewState; Anim.SetTrigger(AnimationTrigger); }//불필요한 상태 변경을 최소화. 각각의 상태에 맞게 애니메이터의 트리거를 바꾸어준다
+
+    if (state != NewState) 
+    {
+        state = NewState;
+        Anim.ResetTrigger("IDLE");
+        Anim.ResetTrigger("WALKING");
+        Anim.ResetTrigger("RUNNING");
+        Anim.ResetTrigger("HIT");
+        Anim.ResetTrigger("ATTACK");
+        Anim.SetTrigger(AnimationTrigger);
     }
-
-
+    }
 
     private void EnemySoundPlay()
     {
         Ado.Play();
         Ado.loop = false;
         Debug.Log("ROAR!!");
+    }
+
+    public void OnHit(float damage, Vector3 hitPoint, Vector3 hitNormal, float knockbackForece)//피격 처리 메서드
+    {
+        if (state == Define.EnemyState.HIT) return;//피격 상태일 때는 추가 피격을 받지 않는다. 피격 회복시간을 매우 짧게 설정
+        SetState(Define.EnemyState.HIT, "HIT");
+        Agent.isStopped =true;//피격받으면 잠시 멈춤
+        currentHitTime = 0.0f;
+
+        if(rb!=null)//넉백 효과
+        {
+            Vector3 knockbackDirection = (transform.position - hitPoint).normalized;
+            knockbackDirection.y = 0;
+            rb.AddForce(knockbackDirection * knockbackForece, ForceMode.Impulse);
+        }
+    }
+
+    private void UpdateHit()//공격 당했을 때의 상태
+    {
+        currentHitTime+=Time.deltaTime;//피격 시간을 체크해서
+        if(currentHitTime >= hitRecoveryTime)//피격 후 회복 시간이 지나면
+        {
+            currentHitTime = 0.0f;//피격 시간을 초기화
+            SetState(Define.EnemyState.IDLE, "IDLE");//IDLE 상태로 전환
+            Agent.isStopped = false;
+        }
     }
 }
