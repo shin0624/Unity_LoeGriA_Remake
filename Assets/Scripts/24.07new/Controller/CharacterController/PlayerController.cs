@@ -23,6 +23,9 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private float attackRange = 5.0f; // 공격 범위
     [SerializeField] private float knockBackForce = 500.0f; // 넉백 힘
     [SerializeField] private LayerMask enemyLayer; // 적 레이어
+    [SerializeField] private float attackDelay = 0.5f; // 공격 딜레이
+    
+    
     private void Awake()
     {
         if(playerInstance == null)
@@ -73,7 +76,7 @@ public class PlayerController : MonoBehaviour
         }
         if(Input.GetMouseButtonDown(0))
         {
-            Attack();
+            StartCoroutine(AttackRountine());//공격 코루틴 시작
         }
     }
 
@@ -113,11 +116,16 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    private void Attack()// 공격 메서드
+    
+
+    private IEnumerator AttackRountine()// Attack메서드를 코루틴으로 변경. 애니메이션 클립과 실제 공격 판정 간 간극 해소
     {
         SetState(Define.PlayerState.ATTACK, "ATTACK");
         Anim.SetBool("IsAttack", true);
 
+        yield return new WaitForSeconds(attackDelay);//공격 딜레이 변수값 만큼 대기 후 재생.
+
+        //실제 공격 판정
         Vector3 rayOrigin = transform.position + Vector3.up * 1.5f;
         Vector3 rayDirection = transform.forward;
         float rayRadius = 1.0f;//구체 레이캐스트의 반지름
@@ -164,8 +172,10 @@ public class PlayerController : MonoBehaviour
                 // }
             }
         }
+        yield return new WaitForSeconds(Anim.GetCurrentAnimatorStateInfo(0).length);//애니메이션 클립 길이만큼 대기
+        ResetAttack();//공격 애니메이션 리셋
     }
-
+    
     private void ResetAttack()
     {
         Anim.SetBool("IsAttack", false); // 공격 애니메이션 리셋

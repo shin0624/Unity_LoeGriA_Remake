@@ -799,9 +799,6 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 100002, guid: 73b3e650b26458644b0371571d21e156, type: 3}
       insertIndex: -1
       addedObject: {fileID: 2332644029738951464}
-    - targetCorrespondingSourceObject: {fileID: 100002, guid: 73b3e650b26458644b0371571d21e156, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 4516530527063523764}
   m_SourcePrefab: {fileID: 100100000, guid: 73b3e650b26458644b0371571d21e156, type: 3}
 --- !u!1 &8578846974691518191 stripped
 GameObject:
@@ -917,9 +914,11 @@ MonoBehaviour:
   Player: {fileID: 0}
   Agent: {fileID: 8452902591758675670}
   Anim: {fileID: 6881025942027333735}
+  rb: {fileID: 0}
   ChaseRange: 20
   DetectionRange: 15
   AttackRange: 1
+  hitRecoveryTime: 0.5
   Ado: {fileID: 0}
 --- !u!82 &2332644029738951464
 AudioSource:
@@ -1017,15 +1016,3 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
---- !u!114 &4516530527063523764
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8578846974691518191}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 90c11175baeb39348bff09dc261393cf, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 

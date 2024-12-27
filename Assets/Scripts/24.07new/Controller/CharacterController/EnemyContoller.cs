@@ -5,27 +5,27 @@ using UnityEngine.AI;
 
 public class EnemyController : MonoBehaviour, IDamageable
 {  
+    //----------------- 고블린 에너미 기본 변수 -----------------
     [SerializeField] private GameObject Player;
     [SerializeField] private NavMeshAgent Agent; // Bake된 NavMesh에서 활동할 에너미
     [SerializeField] private Animator Anim;
     [SerializeField] private Rigidbody rb;
-
-    [SerializeField, Range(0f, 20.0f)]
-    private float ChaseRange = 12.0f;//플레이어 추격 가능 범위
-    [SerializeField, Range(0f, 20.0f)]
-    private float DetectionRange = 8.0f;// 플레이어 탐지 거리
-    [SerializeField, Range(0f, 20.0f)]
-    private float AttackRange = 2.0f;// 공격 가능 범위
-    [SerializeField] private float hitRecoveryTime = 0.5f; // 피격 후 회복 시간
-
     private Define.EnemyState state;//에너미 상태 변수
-    private float DistanceToPlayer;//플레이어와의 거리를 저장할 변수
-
+    private float currentHitTime = 0.0f; // 현재 피격 시간
+ //----------------- 범위, 거리 변수 -----------------
+    [SerializeField, Range(0f, 20.0f)] private float ChaseRange = 12.0f;//플레이어 추격 가능 범위
+    [SerializeField, Range(0f, 20.0f)] private float DetectionRange = 8.0f;// 플레이어 탐지 거리
+    [SerializeField, Range(0f, 20.0f)] private float AttackRange = 2.0f;// 공격 가능 범위
+    [SerializeField] private float hitRecoveryTime = 0.5f; // 피격 후 회복 시간
     private List<Vector3> Path = new List<Vector3>();// A*알고리즘으로 계산된 경로를저장할 리스트
     private int CurrentPathIndex = 0;// 에너미가 현재 이동중인 경로 지점의 인덱스. 처음에는 Path[0]으로 이동.
+    private float DistanceToPlayer;//플레이어와의 거리를 저장할 변수
 
-    [SerializeField] private AudioSource Ado;
-    private float currentHitTime = 0.0f; // 현재 피격 시간
+ //----------------- 소리, 기타  -----------------
+    [SerializeField] private AudioClip roarSound;
+    [SerializeField] private AudioClip hitSound;
+    private AudioManager audioManager;
+    private Coroutine hitCoroutine; // hit 상태 처리를 코루틴으로 수행
 
     private void Start()
     {
@@ -33,13 +33,12 @@ public class EnemyController : MonoBehaviour, IDamageable
         state = Define.EnemyState.IDLE;//초기상태 : IDLE
         Agent = GetComponent<NavMeshAgent>();
         Agent.isStopped = true;
-        Ado = GetComponent<AudioSource>();
         rb = GetComponent<Rigidbody>();
-
+        audioManager = FindAnyObjectByType<AudioManager>();
         BeginPatrol();//처음에 탐지 시작
     }
 
-    private void Update()
+    private void Update()//Hit상태는 코루틴에서 처리하니까 switch문에서 제외
     {
         DistanceToPlayer = Vector3.Distance(transform.position, Player.transform.position);//플레이어와 에너미 사이의 거리를 계산
         switch (state)
@@ -54,9 +53,6 @@ public class EnemyController : MonoBehaviour, IDamageable
             case Define.EnemyState.ATTACK:
                 UpdateAttack();//플레이어를 공격
                 break;
-            case Define.EnemyState.HIT:
-                UpdateHit();// 공격 당했을 때 상태 추가
-                break;
         }
     }
 
@@ -69,7 +65,7 @@ public class EnemyController : MonoBehaviour, IDamageable
 
             if (DistanceToPlayer <= DetectionRange && state != Define.EnemyState.ATTACK)//탐지 범위 내에 플레이어가 존재하면 && 공격 상태가 아닐 때 추격을 시작한다.
             {
-                EnemySoundPlay();
+                audioManager.PlaySound(roarSound);
                 SetState(Define.EnemyState.RUNNING, "RUNNING");
                 return;
             }
@@ -114,7 +110,7 @@ public class EnemyController : MonoBehaviour, IDamageable
     {
         if (Agent.isOnNavMesh)
         {
-            EnemySoundPlay();
+            
             SetState(Define.EnemyState.RUNNING, "RUNNING");
             Agent.isStopped = false;
             Agent.speed = 4.0f;
@@ -148,53 +144,74 @@ public class EnemyController : MonoBehaviour, IDamageable
         }
     }
 
-
-    private void SetState(Define.EnemyState NewState, string AnimationTrigger)// 상태변경 메서드
-    {
-        //if (state != NewState) { state = NewState; Anim.SetTrigger(AnimationTrigger); }//불필요한 상태 변경을 최소화. 각각의 상태에 맞게 애니메이터의 트리거를 바꾸어준다
-
-    if (state != NewState) 
-    {
-        state = NewState;
-        Anim.ResetTrigger("IDLE");
-        Anim.ResetTrigger("WALKING");
-        Anim.ResetTrigger("RUNNING");
-        Anim.ResetTrigger("HIT");
-        Anim.ResetTrigger("ATTACK");
-        Anim.SetTrigger(AnimationTrigger);
-    }
-    }
-
-    private void EnemySoundPlay()
-    {
-        Ado.Play();
-        Ado.loop = false;
-        Debug.Log("ROAR!!");
-    }
-
     public void OnHit(float damage, Vector3 hitPoint, Vector3 hitNormal, float knockbackForece)//피격 처리 메서드
     {
         if (state == Define.EnemyState.HIT) return;//피격 상태일 때는 추가 피격을 받지 않는다. 피격 회복시간을 매우 짧게 설정
+        if(hitCoroutine!=null)
+        {
+            StopCoroutine(hitCoroutine);//이전 Hit코루틴이 실행 중이라면 중지.
+        }
+        hitCoroutine = StartCoroutine(HitRoutine(hitPoint, knockbackForece));//새로운 피격 코루틴 시작
+
+    }
+
+    private IEnumerator HitRoutine(Vector3 hitPoint, float knockbackForece)// Hit상태를 코루틴으로 관리. 이를 통해 피격 판정과 애니메이션 속도 간 동기화 및 피격 후 상태 고정을 예방한다.
+    {
+        //상태 변화 및 애니메이션 설정
         SetState(Define.EnemyState.HIT, "HIT");
-        Agent.isStopped =true;//피격받으면 잠시 멈춤
+        Agent.isStopped = true;
         currentHitTime = 0.0f;
 
-        if(rb!=null)//넉백 효과
+        if(rb!=null)//넉백 효과 및 사운드 재생
         {
             Vector3 knockbackDirection = (transform.position - hitPoint).normalized;
             knockbackDirection.y = 0;
             rb.AddForce(knockbackDirection * knockbackForece, ForceMode.Impulse);
         }
+        if(audioManager!=null && hitSound!=null)
+        {
+            audioManager.PlaySound(hitSound);
+        }
+
+        //Hit 애니메이션 길이만큼 대기
+        float hitAnimLength = Anim.GetCurrentAnimatorStateInfo(0).length;// 현재 재생중인 애니메이션의 길이를 반환
+        yield return new WaitForSeconds(hitAnimLength);
+
+        //Hit 상태에서 복귀
+        currentHitTime = 0.0f;
+        Agent.isStopped = false;
+
+         // Hit 후 플레이어와의 거리에 따라 적절한 상태로 전환
+        if (DistanceToPlayer <= AttackRange)// 공격 당한 후 플레이어와의 거리가 공격 가능 범위 내에 있다면
+        {
+            SetState(Define.EnemyState.ATTACK, "ATTACK");
+        }
+        else if (DistanceToPlayer <= DetectionRange)// 공격 당한 후 플레이어를 쫒아갈 수 있다면
+        {
+            SetState(Define.EnemyState.RUNNING, "RUNNING");
+        }
+        else//그 외의 경우
+        {
+            SetState(Define.EnemyState.WALKING, "WALKING");
+            BeginPatrol();
+        }
+        
+        hitCoroutine = null;
     }
 
-    private void UpdateHit()//공격 당했을 때의 상태
+    private void SetState(Define.EnemyState NewState, string AnimationTrigger)// 상태변경 메서드
     {
-        currentHitTime+=Time.deltaTime;//피격 시간을 체크해서
-        if(currentHitTime >= hitRecoveryTime)//피격 후 회복 시간이 지나면
+        if (state != NewState) 
         {
-            currentHitTime = 0.0f;//피격 시간을 초기화
-            SetState(Define.EnemyState.IDLE, "IDLE");//IDLE 상태로 전환
-            Agent.isStopped = false;
+            state = NewState;
+            Anim.ResetTrigger("IDLE");
+            Anim.ResetTrigger("WALKING");
+            Anim.ResetTrigger("RUNNING");
+            Anim.ResetTrigger("HIT");
+            Anim.ResetTrigger("ATTACK");
+            Anim.SetTrigger(AnimationTrigger);
+            Debug.Log($"Enemy state changed to: {NewState} with animation: {AnimationTrigger}");
         }
     }
+    
 }
