@@ -35,10 +35,10 @@ public class EnemyHP : MonoBehaviour
             enemyPool = FindAnyObjectByType<EnemyPool>();
         }
         CurrentHP = MaxHP;
-        hpBarInstance.SetActive(false);
         hpBarInstance = Instantiate(hpBarUI, hpBarPosition.position, Quaternion.identity, hpBarPosition);//에너미의 머리 위의 빈 오브젝트 위치에 체력 바를 위치시키고 인스턴스로 설정
         hpFill = hpBarInstance.GetComponentInChildren<Image>();//체력바 ui 인스턴스의 자식인 체력바 이미지를 할당
         hpFill.transform.position = hpBarInstance.transform.position;
+        hpBarInstance.SetActive(false);
     }
 
     public void TakeDamage(float damage)// 에너미 컨트롤러의 OnHit()메서드에 선언

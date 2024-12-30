@@ -35,20 +35,20 @@ public class EnemyPool : MonoBehaviour
     
     public GameObject GetEnemy()// 에너미를 풀에서 꺼내 활성화시킨다.
     {
+        GameObject enemy;
         if (pool.Count > 0)
         {
-            GameObject enemy = pool.Dequeue();
-            enemy.transform.position = RandomSpawnPosition();
-            enemy.SetActive(true);
-            return enemy;
+            enemy = pool.Dequeue();
         }
         else
         {
-            GameObject enemy = Instantiate(enemyPrefab);
-            enemy.transform.position = RandomSpawnPosition();
-            enemy.SetActive(true);
-            return enemy;
+            enemy = Instantiate(enemyPrefab);
         }
+        Vector3 spawnPos = GetValidSpawnPosition();
+        enemy.transform.position = spawnPos;
+        enemy.SetActive(true);
+        return enemy;
+        
     }
 
     public void ReturnEnemy(GameObject enemy)//에너미를 풀로 반환하는 메서드
@@ -56,19 +56,23 @@ public class EnemyPool : MonoBehaviour
         enemy.SetActive(false);//비활성화
         pool.Enqueue(enemy);//풀로 반환
     }
-    private Vector3 RandomSpawnPosition()
+    private Vector3 GetValidSpawnPosition()
     {
-        NavMeshHit hit;
-
-        //NMS 상에서 유효한 랜덤위치를 찾을 때까지 반복
-        do
+        for(int i=0; i<maxAttempts; i++)
         {
-            Vector3 RandomDirection = Random.insideUnitSphere * spawnRange;
-            RandomDirection +=spawnTrigger.transform.position;
-            NavMesh.SamplePosition(RandomDirection, out hit, spawnRange, NavMesh.AllAreas);
-        } while (!hit.hit);
+            //랜덤 방향 계산
+            Vector2 randomCircle = Random.insideUnitCircle*spawnRange;
+            Vector3 randomPoint = spawnTrigger.transform.position + new Vector3(randomCircle.x, 5.5f,randomCircle.y);//터레인 지형 높이를 맞추어 스폰해야 함
 
-        return hit.position;
-
+            NavMeshHit hit;
+            //navmesh 상의 가장 가까운 위치 찾기
+            if(NavMesh.SamplePosition(randomPoint, out hit, spawnRange, NavMesh.AllAreas))
+            {
+                return hit.position;
+            }
+        }
+        //유효한 위치를 찾지 못한 경우에는 트리거 위치를 반환.
+        Debug.Log("Don`t find valid position");
+        return spawnTrigger.transform.position;
     }
 }
