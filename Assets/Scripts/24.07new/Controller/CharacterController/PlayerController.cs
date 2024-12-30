@@ -122,11 +122,7 @@ public class PlayerController : MonoBehaviour
         SetState(Define.PlayerState.ATTACK, "ATTACK");
         Anim.SetBool("IsAttack", true);
 
-        //공격 파티클 호출
-        Vector3 particlePosition = transform.position + transform.forward * 1.5f; //파티클 위치를 검 위치로
-        Quaternion particleRotation = transform.rotation;
-        particleManager.PlayAttackParticle(particlePosition, particleRotation);//공격 파티클 재생
-
+        CallAttackParticle(transform.position, transform.rotation);//공격 파티클 호출
 
         yield return new WaitForSeconds(attackDelay);//공격 딜레이 변수값 만큼 대기 후 재생.
 
@@ -139,19 +135,13 @@ public class PlayerController : MonoBehaviour
         RaycastHit[] hits = Physics.SphereCastAll(rayOrigin, rayRadius, rayDirection, attackRange, enemyLayer);// 에너미 레이어를 새로 설정해서 에너미에게만 효과가 가해지도록 함.
         
         //디버그 시각화
-        Debug.DrawRay(rayOrigin, rayDirection * attackRange, Color.red, 3.0f);
-        Debug.DrawLine(
-            rayOrigin + rayDirection * attackRange + Vector3.up * rayRadius,
-            rayOrigin + rayDirection * attackRange - Vector3.up * rayRadius,
-            Color.blue,
-            3.0f
-        );
+        DrawRayLine(rayOrigin, rayDirection, attackRange, rayRadius);
+
         foreach(RaycastHit hit in hits)
         {
             if(hit.collider.CompareTag("Enemy"))
             {
                Debug.Log($"Hit object: {hit.collider.gameObject.name} | Layer: {LayerMask.LayerToName(hit.collider.gameObject.layer)}");
-                //Rigidbody enemyRb = hit.collider.GetComponent<Rigidbody>();
                 IDamageable damageable = hit.collider.GetComponent<IDamageable>();
                 if(damageable != null)
                 {
@@ -167,7 +157,25 @@ public class PlayerController : MonoBehaviour
         yield return new WaitForSeconds(Anim.GetCurrentAnimatorStateInfo(0).length);//애니메이션 클립 길이만큼 대기
         ResetAttack();//공격 애니메이션 리셋
     }
-    
+
+    private void CallAttackParticle(Vector3 particlePosition, Quaternion particleRotation)//공격 파티클 호출 메서드
+    {
+        particlePosition = transform.position + transform.forward * 1.5f; //파티클 위치를 검 위치로
+        particleRotation = transform.rotation;
+         particleManager.PlayAttackParticle(particlePosition, particleRotation);//공격 파티클 재생
+    }
+
+    private void DrawRayLine(Vector3 rayOrigin, Vector3 rayDirection, float attackRange, float rayRadius)// 디버그 시각화 메서드
+    {
+        Debug.DrawRay(rayOrigin, rayDirection * attackRange, Color.red, 3.0f);
+        Debug.DrawLine(
+            rayOrigin + rayDirection * attackRange + Vector3.up * rayRadius,
+            rayOrigin + rayDirection * attackRange - Vector3.up * rayRadius,
+            Color.blue,
+            3.0f
+        );
+    }
+
     private void ResetAttack()
     {
         Anim.SetBool("IsAttack", false); // 공격 애니메이션 리셋
