@@ -153,6 +153,7 @@ public class EnemyController : MonoBehaviour, IDamageable
         {
             StopCoroutine(hitCoroutine);//이전 Hit코루틴이 실행 중이라면 중지.
         }
+        hitPoint = transform.position;//피격 파티클 출력 지점을 적의 중심으로 설정
         hitCoroutine = StartCoroutine(HitRoutine(hitPoint, knockbackForece));//새로운 피격 코루틴 시작
         particleManager.PlayHitParticle(hitPoint,hitNormal);//피격 파티클 재생
     }
