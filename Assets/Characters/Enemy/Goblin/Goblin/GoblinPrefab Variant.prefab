@@ -1,5 +1,36 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!1 &9119176690862337097
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 5558657560250831601}
+  m_Layer: 10
+  m_Name: HPInstancePosition
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &5558657560250831601
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9119176690862337097}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: -0.044, z: 1.391}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 8578846974691490499}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &8578846974691614797
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -779,7 +810,10 @@ PrefabInstance:
     m_RemovedComponents:
     - {fileID: 11100000, guid: 73b3e650b26458644b0371571d21e156, type: 3}
     m_RemovedGameObjects: []
-    m_AddedGameObjects: []
+    m_AddedGameObjects:
+    - targetCorrespondingSourceObject: {fileID: 400014, guid: 73b3e650b26458644b0371571d21e156, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 5558657560250831601}
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: 100002, guid: 73b3e650b26458644b0371571d21e156, type: 3}
       insertIndex: -1
@@ -798,8 +832,16 @@ PrefabInstance:
       addedObject: {fileID: 2884319899474710758}
     - targetCorrespondingSourceObject: {fileID: 100002, guid: 73b3e650b26458644b0371571d21e156, type: 3}
       insertIndex: -1
+      addedObject: {fileID: 5904142123928495278}
+    - targetCorrespondingSourceObject: {fileID: 100002, guid: 73b3e650b26458644b0371571d21e156, type: 3}
+      insertIndex: -1
       addedObject: {fileID: 2332644029738951464}
   m_SourcePrefab: {fileID: 100100000, guid: 73b3e650b26458644b0371571d21e156, type: 3}
+--- !u!4 &8578846974691490499 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 400014, guid: 73b3e650b26458644b0371571d21e156, type: 3}
+  m_PrefabInstance: {fileID: 8578846974691614797}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &8578846974691518191 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 100002, guid: 73b3e650b26458644b0371571d21e156, type: 3}
@@ -911,15 +953,36 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 89c9934a09934384d9d1f97de3305ca1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  managers: {fileID: 0}
   Player: {fileID: 0}
   Agent: {fileID: 8452902591758675670}
   Anim: {fileID: 6881025942027333735}
-  rb: {fileID: 0}
+  rb: {fileID: 1608780975167711084}
+  particleManager: {fileID: 0}
+  hpInstance: {fileID: 5904142123928495278}
   ChaseRange: 20
   DetectionRange: 15
   AttackRange: 1
   hitRecoveryTime: 0.5
-  Ado: {fileID: 0}
+  roarSound: {fileID: 8300000, guid: a91f7cc8784a68b479d840b409a4cbe4, type: 3}
+  hitSound: {fileID: 8300000, guid: 18f5c83d97764924495c816a776cc5da, type: 3}
+--- !u!114 &5904142123928495278
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8578846974691518191}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 45f1e9fda5cb5fd4eb278e7779ccee71, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  MaxHP: 50
+  CurrentHP: 0
+  hpBarUI: {fileID: 670574892627594764, guid: 232aafe6fd5d8f041b4b4bbf664eeb23, type: 3}
+  hpBarPosition: {fileID: 5558657560250831601}
+  respawnTime: 5
 --- !u!82 &2332644029738951464
 AudioSource:
   m_ObjectHideFlags: 0

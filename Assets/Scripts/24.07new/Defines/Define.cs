@@ -23,6 +23,7 @@ public class Define
         READY,
         READYOFF,
         HIT,
+        DIE,
     
     };
 

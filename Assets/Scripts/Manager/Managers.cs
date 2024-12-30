@@ -36,14 +36,6 @@ public class Managers : MonoBehaviour
     PlayerSpawnManager playerSpawn = new PlayerSpawnManager();
     public static PlayerSpawnManager SpawnManager { get { return Instance.playerSpawn; } }
 
-    ObjectPooler objectPooler = new ObjectPooler();
-    public static ObjectPooler ObjectPoolerInstance { get { return Instance.objectPooler; } }
-
-    EnemySpawner enemySpawner = new EnemySpawner();
-    public static EnemySpawner EnemySpawnerInstance { get { return Instance.enemySpawner; } }
-
-
-
     //GetInstance()를 property형식으로 바꾸고자 하면
     //public static Managers Instance { get{Init(); return s_instance;} } 로 바꾼 후 Player에서 Managers mg = Mangers.Instance 형식으로 호출하면 됨
 

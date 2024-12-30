@@ -1,7 +1,7 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Events;
 
 public class PlayerHP : MonoBehaviour
 {
@@ -10,13 +10,13 @@ public class PlayerHP : MonoBehaviour
    public float MaxHP = 100.0f;//최대 HP
    public float CurrentHP;//현재 HP
    public event Action OnHPChanged; // hp 변경 이벤트
-
+   
    private void Awake() 
     {
         if(Instance==null)
         {
             Instance = this;
-            dontDestroyOnLoad(gameObject);
+            DontDestroyOnLoad(gameObject);
         }
         else
         {
@@ -26,6 +26,7 @@ public class PlayerHP : MonoBehaviour
     void Start()
     {
         CurrentHP = MaxHP;//초기 HP 설정
+        Debug.Log($"{CurrentHP}, {MaxHP}" );
     }
 
     public void TakeDamage(float damage)//데미지를 받았을 때 : HP 변경을 알린다.

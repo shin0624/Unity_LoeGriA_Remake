@@ -5,6 +5,8 @@ using UnityEngine.AI;
 
 public class EnemyController : MonoBehaviour, IDamageable
 {  
+    public GameObject managers;
+
     //----------------- 고블린 에너미 기본 변수 -----------------
     [SerializeField] private GameObject Player;
     [SerializeField] private NavMeshAgent Agent; // Bake된 NavMesh에서 활동할 에너미
@@ -13,6 +15,8 @@ public class EnemyController : MonoBehaviour, IDamageable
     private Define.EnemyState state;//에너미 상태 변수
     private float currentHitTime = 0.0f; // 현재 피격 시간
     [SerializeField] private PlayerAttackParticleManager particleManager; // 에너미 공격 이펙트 매니저
+    public EnemyHP hpInstance; // 에너미 hp 변수
+
  //----------------- 범위, 거리 변수 -----------------
     [SerializeField, Range(0f, 20.0f)] private float ChaseRange = 12.0f;//플레이어 추격 가능 범위
     [SerializeField, Range(0f, 20.0f)] private float DetectionRange = 8.0f;// 플레이어 탐지 거리
@@ -30,18 +34,33 @@ public class EnemyController : MonoBehaviour, IDamageable
 
     private void Start()
     {
+        managers = GameObject.Find("@Managers");
+        nullCheck(); 
         Player = GameObject.FindGameObjectWithTag("Player");
         state = Define.EnemyState.IDLE;//초기상태 : IDLE
-        Agent = GetComponent<NavMeshAgent>();
         Agent.isStopped = true;
-        rb = GetComponent<Rigidbody>();
-        audioManager = FindAnyObjectByType<AudioManager>();
         BeginPatrol();//처음에 탐지 시작
+    }
+
+    private void nullCheck()
+    {
+        if(particleManager==null)
+        {
+            particleManager = managers.GetComponent<PlayerAttackParticleManager>();
+        }
+        if(audioManager==null)
+        {
+            audioManager = managers.GetComponent<AudioManager>();
+        }
+        rb = GetComponent<Rigidbody>();
+        Agent = GetComponent<NavMeshAgent>();
+        hpInstance = GetComponent<EnemyHP>();
     }
 
     private void Update()//Hit상태는 코루틴에서 처리하니까 switch문에서 제외
     {
         DistanceToPlayer = Vector3.Distance(transform.position, Player.transform.position);//플레이어와 에너미 사이의 거리를 계산
+        
         switch (state)
         {
             case Define.EnemyState.IDLE:
@@ -54,7 +73,24 @@ public class EnemyController : MonoBehaviour, IDamageable
             case Define.EnemyState.ATTACK:
                 UpdateAttack();//플레이어를 공격
                 break;
+            case Define.EnemyState.DIE: // 에너미 사망
+                Die();
+                break;
         }
+    }
+
+    private void Die()
+    {
+        StartCoroutine(DieCoroutine());
+    }
+
+    private IEnumerator DieCoroutine()// 에너미 사망 코루틴 : die 애니메이션 완료후 
+    {
+        SetState(Define.EnemyState.DIE, "DIE");// 상태를  die로 설정하고 애니메이션 트리거 설정
+        Agent.isStopped = true;//NavMesh 정지
+        //Hit 애니메이션 길이만큼 대기
+        float DieAnimLength = Anim.GetCurrentAnimatorStateInfo(0).length;// 현재 재생중인 애니메이션의 길이를 반환
+        yield return new WaitForSeconds(DieAnimLength);//사망 애니메이션 재생 시간만큼 대기
     }
 
     private void Patrol()// 탐색상태
@@ -110,12 +146,12 @@ public class EnemyController : MonoBehaviour, IDamageable
     private void UpdateChase()
     {
         if (Agent.isOnNavMesh)
-        {
-            
+        {         
             SetState(Define.EnemyState.RUNNING, "RUNNING");
             Agent.isStopped = false;
             Agent.speed = 4.0f;
             Agent.destination = Player.transform.position;// 목적지를 플레이어 포지션으로 설정하여 추격
+            hpInstance.ActiveHPBar();// 플레이어 추격 상태 전환 시 체력 바 활성화
             if (DistanceToPlayer > ChaseRange)//플레이어와의 거리가 추격 가능 범위를 벗어났다면
             {
                 BeginPatrol();//탐지 상태로 전환 
@@ -156,6 +192,9 @@ public class EnemyController : MonoBehaviour, IDamageable
         hitPoint = transform.position;//피격 파티클 출력 지점을 적의 중심으로 설정
         hitCoroutine = StartCoroutine(HitRoutine(hitPoint, knockbackForece));//새로운 피격 코루틴 시작
         particleManager.PlayHitParticle(hitPoint,hitNormal);//피격 파티클 재생
+
+        hpInstance.TakeDamage(damage);//플레이어의 공격이 에너미에 적중하면 PlayerController에서 에너미의 IDamageable을 GetComponent로 찾아 damage를 전달할 것.
+        Debug.Log($"에너미가 받은 데미지 : {damage}, 에너미 남은 체력 : {hpInstance.CurrentHP}");
     }
 
     private IEnumerator HitRoutine(Vector3 hitPoint, float knockbackForece)// Hit상태를 코루틴으로 관리. 이를 통해 피격 판정과 애니메이션 속도 간 동기화 및 피격 후 상태 고정을 예방한다.

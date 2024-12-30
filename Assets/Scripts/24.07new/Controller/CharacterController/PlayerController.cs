@@ -18,6 +18,7 @@ public class PlayerController : MonoBehaviour
     private bool JumpInput; // 점프 요청 플래그
     private Define.PlayerState state; // 상태 변수(플레이어)
     private Vector3 MoveVector;// 이동 벡터
+    public float baseDamage = 20.0f;// 기본 공격 데미지
 
 //-----------에너미 넉백 관련 변수들------
     [SerializeField] private float attackRange = 5.0f; // 공격 범위
@@ -141,16 +142,14 @@ public class PlayerController : MonoBehaviour
         {
             if(hit.collider.CompareTag("Enemy"))
             {
-               Debug.Log($"Hit object: {hit.collider.gameObject.name} | Layer: {LayerMask.LayerToName(hit.collider.gameObject.layer)}");
-                IDamageable damageable = hit.collider.GetComponent<IDamageable>();
+                IDamageable damageable = hit.collider.GetComponent<IDamageable>();// ray가 닿은 콜라이더를 가진 에너미의 idamageable 인터페이스를 찾아서 OnHit 메서드를 호출
                 if(damageable != null)
                 {
                     //거리에 따른 넉백 힘 감소
                       float distanceMultiplier = 1 - (hit.distance / attackRange);
                       float finalKnockbackForce = knockBackForce * distanceMultiplier; // 타격 지점에서 멀 수록 넉백 효과가 약해짐
 
-                    damageable.OnHit(10.0f, hit.point, hit.normal, finalKnockbackForce);//10의 데미지, 공격이 적중한 위치, 충돌 표면의 법선벡터, 밀려나가는 힘의 크기를 매개변수로 전달.
-                    // ray가 닿은 콜라이더를 가진 에너미의 idamageable 인터페이스를 찾아서 OnHit 메서드를 호출
+                    damageable.OnHit(baseDamage, hit.point, hit.normal, finalKnockbackForce);//10의 데미지, 공격이 적중한 위치, 충돌 표면의 법선벡터, 밀려나가는 힘의 크기를 매개변수로 전달.     
                 }
             }
         }

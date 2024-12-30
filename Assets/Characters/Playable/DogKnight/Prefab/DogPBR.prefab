@@ -1345,7 +1345,6 @@ GameObject:
   m_Component:
   - component: {fileID: 8422892626600249584}
   - component: {fileID: 8422892626592999198}
-  - component: {fileID: 5519499359679836475}
   - component: {fileID: 7742235533191422722}
   - component: {fileID: 2334903781624568116}
   - component: {fileID: 6041701399988359844}
@@ -1395,19 +1394,6 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
---- !u!114 &5519499359679836475
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8422892626600285392}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 256ed58f7fcd5e8488e785dfae458ae3, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  IsUsing: 0
 --- !u!54 &7742235533191422722
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -1452,12 +1438,14 @@ MonoBehaviour:
   JumpPower: 0
   MoveSpeed: 0
   rb: {fileID: 0}
-  swordObject: {fileID: 0}
+  baseDamage: 20
   attackRange: 2
   knockBackForce: 10
   enemyLayer:
     serializedVersion: 2
     m_Bits: 1024
+  attackDelay: 0.5
+  particleManager: {fileID: 0}
 --- !u!65 &6041701399988359844
 BoxCollider:
   m_ObjectHideFlags: 0
