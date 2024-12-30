@@ -59,17 +59,16 @@ public class EnemyPool : MonoBehaviour
     private Vector3 RandomSpawnPosition()
     {
         NavMeshHit hit;
-        bool validPositionFound = false;
 
-        // NavMesh 상에서 유효한 랜덤 위치를 찾을 때까지 반복
+        //NMS 상에서 유효한 랜덤위치를 찾을 때까지 반복
         do
         {
-            Vector3 randomDirection = Random.insideUnitSphere * spawnRange; // 구체 범위의 랜덤 방향 생성
-            randomDirection += spawnTrigger.transform.position; // 트리거 위치를 기준으로 범위 설정
-            validPositionFound = NavMesh.SamplePosition(randomDirection, out hit, spawnRange, NavMesh.AllAreas); // 유효성 검사
-        } while (!validPositionFound);
+            Vector3 RandomDirection = Random.insideUnitSphere * spawnRange;
+            RandomDirection +=spawnTrigger.transform.position;
+            NavMesh.SamplePosition(RandomDirection, out hit, spawnRange, NavMesh.AllAreas);
+        } while (!hit.hit);
 
-        return hit.position; // 유효한 위치 반환
+        return hit.position;
 
     }
 }
