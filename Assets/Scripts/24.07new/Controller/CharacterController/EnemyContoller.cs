@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -14,8 +15,9 @@ public class EnemyController : MonoBehaviour, IDamageable
     [SerializeField] private Rigidbody rb;
     private Define.EnemyState state;//에너미 상태 변수
     private float currentHitTime = 0.0f; // 현재 피격 시간
-    [SerializeField] private PlayerAttackParticleManager particleManager; // 에너미 공격 이펙트 매니저
+    private PlayerAttackParticleManager particleManager; // 에너미 공격 이펙트 매니저
     public EnemyHP hpInstance; // 에너미 hp 변수
+    private float currentHP;// 현재 체력
 
  //----------------- 범위, 거리 변수 -----------------
     [SerializeField, Range(0f, 20.0f)] private float ChaseRange = 12.0f;//플레이어 추격 가능 범위
@@ -29,6 +31,7 @@ public class EnemyController : MonoBehaviour, IDamageable
  //----------------- 소리, 기타  -----------------
     [SerializeField] private AudioClip roarSound;
     [SerializeField] private AudioClip hitSound;
+    [SerializeField] private AudioClip dieSound;
     private AudioManager audioManager;
     private Coroutine hitCoroutine; // hit 상태 처리를 코루틴으로 수행
 
@@ -39,6 +42,7 @@ public class EnemyController : MonoBehaviour, IDamageable
         Player = GameObject.FindGameObjectWithTag("Player");
         state = Define.EnemyState.IDLE;//초기상태 : IDLE
         Agent.isStopped = true;
+        currentHP = hpInstance.CurrentHP; // currentHP 초기화
         BeginPatrol();//처음에 탐지 시작
     }
 
@@ -52,15 +56,27 @@ public class EnemyController : MonoBehaviour, IDamageable
         {
             audioManager = managers.GetComponent<AudioManager>();
         }
-        rb = GetComponent<Rigidbody>();
-        Agent = GetComponent<NavMeshAgent>();
-        hpInstance = GetComponent<EnemyHP>();
+        if(rb==null)
+        {
+            rb = GetComponent<Rigidbody>();
+        }
+        if(Agent==null)
+        {
+            Agent = GetComponent<NavMeshAgent>();
+        }
+        if(hpInstance==null)
+        {
+            hpInstance = GetComponent<EnemyHP>();
+        }
+        if(Anim==null)
+        {
+            Anim = GetComponent<Animator>();
+        }
     }
 
     private void Update()//Hit상태는 코루틴에서 처리하니까 switch문에서 제외
     {
         DistanceToPlayer = Vector3.Distance(transform.position, Player.transform.position);//플레이어와 에너미 사이의 거리를 계산
-        
         switch (state)
         {
             case Define.EnemyState.IDLE:
@@ -79,7 +95,7 @@ public class EnemyController : MonoBehaviour, IDamageable
         }
     }
 
-    private void Die()
+    public void Die()
     {
         StartCoroutine(DieCoroutine());
     }
@@ -87,19 +103,22 @@ public class EnemyController : MonoBehaviour, IDamageable
     private IEnumerator DieCoroutine()// 에너미 사망 코루틴 : die 애니메이션 완료후 
     {
         SetState(Define.EnemyState.DIE, "DIE");// 상태를  die로 설정하고 애니메이션 트리거 설정
+        audioManager.PlaySound(dieSound);
         Agent.isStopped = true;//NavMesh 정지
         //Hit 애니메이션 길이만큼 대기
         float DieAnimLength = Anim.GetCurrentAnimatorStateInfo(0).length;// 현재 재생중인 애니메이션의 길이를 반환
         yield return new WaitForSeconds(DieAnimLength);//사망 애니메이션 재생 시간만큼 대기
+        hpInstance.Die();
     }
 
     private void Patrol()// 탐색상태
     {
         if (Agent.isOnNavMesh && Path.Count > 0)
         {
-            Agent.isStopped = false;
+            BeginPatrol();//탐색 시작
+            //Agent.isStopped = false;
             Agent.speed = 3.0f;
-
+            
             if (DistanceToPlayer <= DetectionRange && state != Define.EnemyState.ATTACK)//탐지 범위 내에 플레이어가 존재하면 && 공격 상태가 아닐 때 추격을 시작한다.
             {
                 audioManager.PlaySound(roarSound);
@@ -192,8 +211,9 @@ public class EnemyController : MonoBehaviour, IDamageable
         hitPoint = transform.position;//피격 파티클 출력 지점을 적의 중심으로 설정
         hitCoroutine = StartCoroutine(HitRoutine(hitPoint, knockbackForece));//새로운 피격 코루틴 시작
         particleManager.PlayHitParticle(hitPoint,hitNormal);//피격 파티클 재생
-
         hpInstance.TakeDamage(damage);//플레이어의 공격이 에너미에 적중하면 PlayerController에서 에너미의 IDamageable을 GetComponent로 찾아 damage를 전달할 것.
+        currentHP = hpInstance.CurrentHP; // currentHP 업데이트
+
         Debug.Log($"에너미가 받은 데미지 : {damage}, 에너미 남은 체력 : {hpInstance.CurrentHP}");
     }
 
@@ -203,7 +223,6 @@ public class EnemyController : MonoBehaviour, IDamageable
         SetState(Define.EnemyState.HIT, "HIT");
         Agent.isStopped = true;
         currentHitTime = 0.0f;
-
         if(rb!=null)//넉백 효과 및 사운드 재생
         {
             Vector3 knockbackDirection = (transform.position - hitPoint).normalized;
@@ -225,13 +244,21 @@ public class EnemyController : MonoBehaviour, IDamageable
         Agent.isStopped = false;
 
          // Hit 후 플레이어와의 거리에 따라 적절한 상태로 전환
-        if (DistanceToPlayer <= AttackRange)// 공격 당한 후 플레이어와의 거리가 공격 가능 범위 내에 있다면
+        if(currentHP<=0)//현재 체력이 0이면 die 호출. 현재 체력은 OnHit()메서드에서 갱신
+        {
+            Die();
+        }
+        else if (DistanceToPlayer <= AttackRange)// 공격 당한 후 플레이어와의 거리가 공격 가능 범위 내에 있다면
         {
             SetState(Define.EnemyState.ATTACK, "ATTACK");
         }
         else if (DistanceToPlayer <= DetectionRange)// 공격 당한 후 플레이어를 쫒아갈 수 있다면
         {
             SetState(Define.EnemyState.RUNNING, "RUNNING");
+        }
+        else if(currentHP<=0)   //체력이 0이하라면
+        {
+            SetState(Define.EnemyState.DIE, "DIE");
         }
         else//그 외의 경우
         {
@@ -252,6 +279,7 @@ public class EnemyController : MonoBehaviour, IDamageable
             Anim.ResetTrigger("RUNNING");
             Anim.ResetTrigger("HIT");
             Anim.ResetTrigger("ATTACK");
+            Anim.ResetTrigger("DIE");
             Anim.SetTrigger(AnimationTrigger);
             Debug.Log($"Enemy state changed to: {NewState} with animation: {AnimationTrigger}");
         }

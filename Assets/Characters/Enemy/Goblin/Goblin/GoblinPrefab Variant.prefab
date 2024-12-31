@@ -966,6 +966,7 @@ MonoBehaviour:
   hitRecoveryTime: 0.5
   roarSound: {fileID: 8300000, guid: a91f7cc8784a68b479d840b409a4cbe4, type: 3}
   hitSound: {fileID: 8300000, guid: 18f5c83d97764924495c816a776cc5da, type: 3}
+  dieSound: {fileID: 8300000, guid: f69eda413372dbf4d9b49750f9ba3e92, type: 3}
 --- !u!114 &5904142123928495278
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -983,6 +984,7 @@ MonoBehaviour:
   hpBarUI: {fileID: 670574892627594764, guid: 232aafe6fd5d8f041b4b4bbf664eeb23, type: 3}
   hpBarPosition: {fileID: 5558657560250831601}
   respawnTime: 5
+  enemyPool: {fileID: 0}
 --- !u!82 &2332644029738951464
 AudioSource:
   m_ObjectHideFlags: 0
