@@ -10,32 +10,40 @@ public class PlayerAttack : MonoBehaviour, IPlayerAttack
     //-----------플레이어 공격 관련 변수-------------
     [SerializeField] private Animator anim;
     public bool IsAttack{get; private set;}
-    //-----------공격 연계 관련 변수-------------
+    //-----------콤보 공격 관련 변수-------------
     private int comboStep = 0;//콤보가 이어지는 횟수
     private float comboTimer = 0.0f;//콤보 연계를 위해 시간을 재는 타이머
     public float comboResetTime = 1.0f;//콤보 연계 종료 타이머
+    [SerializeField] private int maxComboStep;//최대 콤보 횟수
     
     //-----------기본 공격 관련 변수-------------
     public float baseDamage = 10.0f;// 기본 공격 데미지
+    [SerializeField] private float baseKnockBackForce = 500.0f; // 넉백 힘
     [SerializeField] private float attackRange = 5.0f; // 공격 범위
-    [SerializeField] private float knockBackForce = 500.0f; // 넉백 힘
     [SerializeField] private LayerMask enemyLayer; // 적 레이어
     [SerializeField] private float attackDelay = 0.5f; // 공격 딜레이
+
+    //-----------스킬 1 공격 관련 변수-------------
+    public float skillDamage01 = 20.0f;// 스킬 1 공격 데미지
+    [SerializeField] private float KnockBackForce01 = 1000.0f; // 스킬 1 넉백 힘
 
     //-----------파티클 등 이펙트 관련 변수들-------------
     [SerializeField] private PlayerAttackParticleManager particleManager;//플레이어 공격 이펙트 매니저
 
-    public void PerformAttack()
+    public void PerformAttack(int attackNumber)
     {
         if(IsAttack) return;//공격 애니메이션이 진행 중이면 중복 공격을 방지. 공격 하나가 끝난 후 다음 공격으로 이어져야 하기 때문.
-        StartCoroutine(AttackRoutine());//공격 코루틴 실행
-    
+        switch(attackNumber)
+        {
+            case 0 : StartCoroutine(AttackRoutine(attackNumber, baseKnockBackForce, baseDamage)); break;//기본 공격 코루틴 실행
+            case 1 : StartCoroutine(AttackRoutine(attackNumber, KnockBackForce01, skillDamage01)); break; // 스킬 1 공격 코루틴 실행
+        }
     }
 
-    private IEnumerator AttackRoutine()// Attack메서드를 코루틴으로 변경. 애니메이션 클립과 실제 공격 판정 간 간극 해소
+    private IEnumerator AttackRoutine(int attackNumber, float knockBackForce, float damage)// Attack메서드를 코루틴으로 변경. 애니메이션 클립과 실제 공격 판정 간 간극 해소
     {
         anim.SetBool("IsAttack", true);
-        CallAttackParticle(transform.position, transform.rotation);//공격 파티클 호출
+        CallAttackParticle(attackNumber, transform.position, transform.rotation);//공격 파티클 호출
         yield return new WaitForSeconds(attackDelay);//공격 딜레이 변수값 만큼 대기 후 재생.
 
         //실제 공격 판정
@@ -60,7 +68,7 @@ public class PlayerAttack : MonoBehaviour, IPlayerAttack
                       float distanceMultiplier = 1 - (hit.distance / attackRange);
                       float finalKnockbackForce = knockBackForce * distanceMultiplier; // 타격 지점에서 멀 수록 넉백 효과가 약해짐
 
-                    damageable.OnHit(baseDamage, hit.point, hit.normal, finalKnockbackForce);//10의 데미지, 공격이 적중한 위치, 충돌 표면의 법선벡터, 밀려나가는 힘의 크기를 매개변수로 전달.     
+                    damageable.OnHit(damage, hit.point, hit.normal, finalKnockbackForce);//10의 데미지, 공격이 적중한 위치, 충돌 표면의 법선벡터, 밀려나가는 힘의 크기를 매개변수로 전달.     
                 }
             }
         }
@@ -69,11 +77,11 @@ public class PlayerAttack : MonoBehaviour, IPlayerAttack
 
     }
 
-    private void CallAttackParticle(Vector3 particlePosition, Quaternion particleRotation)//공격 파티클 호출 메서드
+    private void CallAttackParticle(int attackNumber, Vector3 particlePosition, Quaternion particleRotation)//공격 파티클 호출 메서드
     {
         particlePosition = transform.position + transform.forward * 1.5f; //파티클 위치를 검 위치로
         particleRotation = transform.rotation;
-        particleManager.PlayAttackParticle(particlePosition, particleRotation);//공격 파티클 재생
+        particleManager.PlayAttackParticle(attackNumber, particlePosition, particleRotation);//공격 파티클 재생
     }
 
     private void DrawRayLine(Vector3 rayOrigin, Vector3 rayDirection, float attackRange, float rayRadius)// 디버그 시각화 메서드
@@ -91,7 +99,7 @@ public class PlayerAttack : MonoBehaviour, IPlayerAttack
     {
         anim.SetBool("IsAttack", false); // 공격 애니메이션 리셋
     }
-    
+
 
 
 }

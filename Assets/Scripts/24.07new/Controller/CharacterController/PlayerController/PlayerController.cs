@@ -13,7 +13,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField, Range(1.0f, 10.0f)] private float JumpPower;//점프 높이
     [SerializeField, Range(1.0f, 10.0f)] private float MoveSpeed;//이동 속도
     [SerializeField] private Rigidbody rb;//리지드바디 컴포넌트
-    [SerializeField] private PlayerAttack playerAttack;//플레이어 공격 컴포넌트
+    [SerializeField] private PlayerAttack playerAttack;//PlayerAttack클래스를 참조
     private bool IsJumping;//점프 유무
     private bool JumpInput; // 점프 요청 플래그
     private Define.PlayerState state; // 상태 변수(플레이어)
@@ -73,8 +73,20 @@ public class PlayerController : MonoBehaviour
         }
         if(Input.GetMouseButtonDown(0))
         {
-           SetState(Define.PlayerState.ATTACK, "ATTACK");
-           playerAttack.PerformAttack();//공격 요청
+            CallPlayerAttack(Define.PlayerState.ATTACK, "ATTACK", 0);//마우스 왼쪽 버튼 클릭 시, 공격 메서드 호출
+        }
+        if(Input.GetKeyDown(KeyCode.R))
+        {
+            CallPlayerAttack(Define.PlayerState.SLASH, "SLASH", 1);//R키 입력 시, 스킬 공격 메서드 호출
+        }
+    }
+
+    private void CallPlayerAttack(Define.PlayerState NewState, string AnimationTrigger, int attackNumber)//공격 메서드 호출
+    {
+        if(state!=NewState)//공격 상태가 아닐 때에만 공격 요청
+        {
+            SetState(NewState, AnimationTrigger);
+            playerAttack.PerformAttack(attackNumber);
         }
     }
 

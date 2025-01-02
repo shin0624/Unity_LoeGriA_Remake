@@ -1347,6 +1347,7 @@ GameObject:
   - component: {fileID: 8422892626592999198}
   - component: {fileID: 7742235533191422722}
   - component: {fileID: 2334903781624568116}
+  - component: {fileID: -7361501123427272727}
   - component: {fileID: 6041701399988359844}
   m_Layer: 7
   m_Name: DogPBR
@@ -1385,7 +1386,7 @@ Animator:
   m_Controller: {fileID: 9100000, guid: fc90652af5835ad4c83d5f942360241c, type: 2}
   m_CullingMode: 1
   m_UpdateMode: 0
-  m_ApplyRootMotion: 0
+  m_ApplyRootMotion: 1
   m_LinearVelocityBlending: 0
   m_StabilizeFeet: 0
   m_AnimatePhysics: 0
@@ -1438,12 +1439,27 @@ MonoBehaviour:
   JumpPower: 0
   MoveSpeed: 0
   rb: {fileID: 0}
-  baseDamage: 20
-  attackRange: 2
-  knockBackForce: 10
+  playerAttack: {fileID: 0}
+--- !u!114 &-7361501123427272727
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8422892626600285392}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3b7224e19dc5d6a419fbd51e20999a21, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  anim: {fileID: 0}
+  comboResetTime: 1
+  baseDamage: 10
+  attackRange: 5
+  knockBackForce: 500
   enemyLayer:
     serializedVersion: 2
-    m_Bits: 1024
+    m_Bits: 0
   attackDelay: 0.5
   particleManager: {fileID: 0}
 --- !u!65 &6041701399988359844
