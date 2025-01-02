@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 149538141}
-  m_IndirectSpecularColor: {r: 0.12081117, g: 0.18658166, b: 0.335446, a: 1}
+  m_IndirectSpecularColor: {r: 0.12101027, g: 0.18672079, b: 0.33551338, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -4591,6 +4591,10 @@ PrefabInstance:
       value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 2334903781624568116, guid: 214e08cd5e5d74c458e2a81b7ec2c84c, type: 3}
+      propertyPath: playerAttack
+      value: 
+      objectReference: {fileID: 1669964699}
+    - target: {fileID: 2334903781624568116, guid: 214e08cd5e5d74c458e2a81b7ec2c84c, type: 3}
       propertyPath: knockBackForce
       value: 500
       objectReference: {fileID: 0}
@@ -4992,7 +4996,10 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 8422892626600249714, guid: 214e08cd5e5d74c458e2a81b7ec2c84c, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1244488693}
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 8422892626600285392, guid: 214e08cd5e5d74c458e2a81b7ec2c84c, type: 3}
+      insertIndex: 3
+      addedObject: {fileID: 1669964699}
   m_SourcePrefab: {fileID: 100100000, guid: 214e08cd5e5d74c458e2a81b7ec2c84c, type: 3}
 --- !u!54 &1669964697 stripped
 Rigidbody:
@@ -5004,6 +5011,28 @@ Animator:
   m_CorrespondingSourceObject: {fileID: 8422892626592999198, guid: 214e08cd5e5d74c458e2a81b7ec2c84c, type: 3}
   m_PrefabInstance: {fileID: 1669964696}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &1669964699
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 760933429}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3b7224e19dc5d6a419fbd51e20999a21, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  anim: {fileID: 1669964698}
+  comboResetTime: 1
+  baseDamage: 10
+  attackRange: 5
+  knockBackForce: 1000
+  enemyLayer:
+    serializedVersion: 2
+    m_Bits: 1024
+  attackDelay: 0.8
+  particleManager: {fileID: 1581457497}
 --- !u!1 &1894121339
 GameObject:
   m_ObjectHideFlags: 0

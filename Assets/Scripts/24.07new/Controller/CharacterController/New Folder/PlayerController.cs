@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
 
-
 public class PlayerController : MonoBehaviour
 {
     private static PlayerController playerInstance; // 플레이어 컨트롤러 싱글톤 인스턴스
@@ -14,19 +13,11 @@ public class PlayerController : MonoBehaviour
     [SerializeField, Range(1.0f, 10.0f)] private float JumpPower;//점프 높이
     [SerializeField, Range(1.0f, 10.0f)] private float MoveSpeed;//이동 속도
     [SerializeField] private Rigidbody rb;//리지드바디 컴포넌트
+    [SerializeField] private PlayerAttack playerAttack;//플레이어 공격 컴포넌트
     private bool IsJumping;//점프 유무
     private bool JumpInput; // 점프 요청 플래그
     private Define.PlayerState state; // 상태 변수(플레이어)
     private Vector3 MoveVector;// 이동 벡터
-    public float baseDamage = 20.0f;// 기본 공격 데미지
-
-//-----------에너미 넉백 관련 변수들------
-    [SerializeField] private float attackRange = 5.0f; // 공격 범위
-    [SerializeField] private float knockBackForce = 500.0f; // 넉백 힘
-    [SerializeField] private LayerMask enemyLayer; // 적 레이어
-    [SerializeField] private float attackDelay = 0.5f; // 공격 딜레이
-//-----------파티클 등 이펙트 관련 변수들
-    [SerializeField] private PlayerAttackParticleManager particleManager;//플레이어 공격 이펙트 매니저
     
     private void Awake()
     {
@@ -44,8 +35,12 @@ public class PlayerController : MonoBehaviour
 
     void Start()
     {
+        if(playerAttack==null)
+        {
+            playerAttack = GetComponent<PlayerAttack>();//플레이어 공격 컴포넌트가 없다면 추가
+        }
         gameObject.layer = LayerMask.NameToLayer("Player");  // 플레이어 오브젝트를 Player 레이어로 설정
-
+        
         Cursor.lockState = CursorLockMode.Locked;//마우스 커서를 화면 안에서 고정
         Cursor.visible = false;//커서가 안보이게 설정
 
@@ -61,8 +56,8 @@ public class PlayerController : MonoBehaviour
 
     private void FixedUpdate()// 이동과 점프가 물리기반 움직임이므로, 물리엔진의 업데이트 속도에 맞춰 일정하게 호출되는 FixedUpdate()에서 Move와 Jump를 호출하는 것이 일관성 유지, 성능 측면에서 효과적
     {
-            Move();
-            Jump();
+        Move();
+        Jump();
     }
 
     private void HandleInput()// 사용자 입력 감지 메서드. 입력감지와 물리연산 처리는 분리하도록 한다.
@@ -78,7 +73,8 @@ public class PlayerController : MonoBehaviour
         }
         if(Input.GetMouseButtonDown(0))
         {
-            StartCoroutine(AttackRountine());//공격 코루틴 시작
+           SetState(Define.PlayerState.ATTACK, "ATTACK");
+           playerAttack.PerformAttack();//공격 요청
         }
     }
 
@@ -118,68 +114,6 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    private IEnumerator AttackRountine()// Attack메서드를 코루틴으로 변경. 애니메이션 클립과 실제 공격 판정 간 간극 해소
-    {
-        SetState(Define.PlayerState.ATTACK, "ATTACK");
-        Anim.SetBool("IsAttack", true);
-
-        CallAttackParticle(transform.position, transform.rotation);//공격 파티클 호출
-
-        yield return new WaitForSeconds(attackDelay);//공격 딜레이 변수값 만큼 대기 후 재생.
-
-        //실제 공격 판정
-        Vector3 rayOrigin = transform.position + Vector3.up * 1.5f;
-        Vector3 rayDirection = transform.forward;
-        float rayRadius = 1.0f;//구체 레이캐스트의 반지름
-
-        //구체 레이캐스트를 사용하여 넓은 범위 감지. 단일 레이캐스트보다 더 자연스러운 무기 판정 가능
-        RaycastHit[] hits = Physics.SphereCastAll(rayOrigin, rayRadius, rayDirection, attackRange, enemyLayer);// 에너미 레이어를 새로 설정해서 에너미에게만 효과가 가해지도록 함.
-        
-        //디버그 시각화
-        DrawRayLine(rayOrigin, rayDirection, attackRange, rayRadius);
-
-        foreach(RaycastHit hit in hits)
-        {
-            if(hit.collider.CompareTag("Enemy"))
-            {
-                IDamageable damageable = hit.collider.GetComponent<IDamageable>();// ray가 닿은 콜라이더를 가진 에너미의 idamageable 인터페이스를 찾아서 OnHit 메서드를 호출
-                if(damageable != null)
-                {
-                    //거리에 따른 넉백 힘 감소
-                      float distanceMultiplier = 1 - (hit.distance / attackRange);
-                      float finalKnockbackForce = knockBackForce * distanceMultiplier; // 타격 지점에서 멀 수록 넉백 효과가 약해짐
-
-                    damageable.OnHit(baseDamage, hit.point, hit.normal, finalKnockbackForce);//10의 데미지, 공격이 적중한 위치, 충돌 표면의 법선벡터, 밀려나가는 힘의 크기를 매개변수로 전달.     
-                }
-            }
-        }
-        yield return new WaitForSeconds(Anim.GetCurrentAnimatorStateInfo(0).length);//애니메이션 클립 길이만큼 대기
-        ResetAttack();//공격 애니메이션 리셋
-    }
-
-    private void CallAttackParticle(Vector3 particlePosition, Quaternion particleRotation)//공격 파티클 호출 메서드
-    {
-        particlePosition = transform.position + transform.forward * 1.5f; //파티클 위치를 검 위치로
-        particleRotation = transform.rotation;
-         particleManager.PlayAttackParticle(particlePosition, particleRotation);//공격 파티클 재생
-    }
-
-    private void DrawRayLine(Vector3 rayOrigin, Vector3 rayDirection, float attackRange, float rayRadius)// 디버그 시각화 메서드
-    {
-        Debug.DrawRay(rayOrigin, rayDirection * attackRange, Color.red, 3.0f);
-        Debug.DrawLine(
-            rayOrigin + rayDirection * attackRange + Vector3.up * rayRadius,
-            rayOrigin + rayDirection * attackRange - Vector3.up * rayRadius,
-            Color.blue,
-            3.0f
-        );
-    }
-
-    private void ResetAttack()
-    {
-        Anim.SetBool("IsAttack", false); // 공격 애니메이션 리셋
-    }
-
     private void OnCollisionEnter(Collision collision)
     {
         if(collision.gameObject.CompareTag("Ground") || collision.gameObject.CompareTag("Bridge"))// 땅에 착지하면 점프상태 리셋
@@ -190,15 +124,15 @@ public class PlayerController : MonoBehaviour
 
     private void SetState(Define.PlayerState NewState, string AnimationTrigger)// 애니메이션 상태 변경 메서드
     {
-    if (state != NewState) 
-    {
-        state = NewState;
-        Anim.ResetTrigger("IDLE");
-        Anim.ResetTrigger("WALKING");
-        Anim.ResetTrigger("RUNNING");
-        Anim.ResetTrigger("JUMPING");
-        Anim.ResetTrigger("ATTACK");
-        Anim.SetTrigger(AnimationTrigger);
-    }
+        if (state != NewState) 
+        {
+            state = NewState;
+            Anim.ResetTrigger("IDLE");
+            Anim.ResetTrigger("WALKING");
+            Anim.ResetTrigger("RUNNING");
+            Anim.ResetTrigger("JUMPING");
+            Anim.ResetTrigger("ATTACK");
+            Anim.SetTrigger(AnimationTrigger);
+        }
     }
 }
