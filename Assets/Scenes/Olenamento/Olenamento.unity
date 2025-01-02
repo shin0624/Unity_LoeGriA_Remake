@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 149538141}
-  m_IndirectSpecularColor: {r: 0.12101027, g: 0.18672079, b: 0.33551338, a: 1}
+  m_IndirectSpecularColor: {r: 0.12087073, g: 0.18659791, b: 0.33545184, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -2067,6 +2067,52 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 8422892626600249714, guid: 214e08cd5e5d74c458e2a81b7ec2c84c, type: 3}
   m_PrefabInstance: {fileID: 1669964696}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &1093812319
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1093812320}
+  - component: {fileID: 1093812321}
+  m_Layer: 0
+  m_Name: SkillParticlePool01
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1093812320
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1093812319}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1581457493}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1093812321
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1093812319}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 62722dfbaf780ad49bcdb96daad8aa00, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  particlePrefab: {fileID: 5503505460791601945, guid: 74c549d1b06b6b140a1fd9536eea637f, type: 3}
+  poolSize: 5
 --- !u!1001 &1126502282
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -3079,7 +3125,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   particlePrefab: {fileID: 3548588485384254792, guid: 2f9e7dc163581394da1e00b561eed65d, type: 3}
-  poolSize: 10
+  poolSize: 5
 --- !u!1 &1443761602
 GameObject:
   m_ObjectHideFlags: 0
@@ -3243,6 +3289,7 @@ Transform:
   - {fileID: 280272569}
   - {fileID: 1437429682}
   - {fileID: 1005073443}
+  - {fileID: 1093812320}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1581457494
@@ -3380,6 +3427,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   attackParticlePool: {fileID: 280272570}
   hitParticlePool: {fileID: 1437429683}
+  skillParticlePool01: {fileID: 1093812321}
 --- !u!114 &1581457498
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4554,6 +4602,30 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: -7361501123427272727, guid: 214e08cd5e5d74c458e2a81b7ec2c84c, type: 3}
+      propertyPath: anim
+      value: 
+      objectReference: {fileID: 1669964698}
+    - target: {fileID: -7361501123427272727, guid: 214e08cd5e5d74c458e2a81b7ec2c84c, type: 3}
+      propertyPath: attackDelay
+      value: 0.8
+      objectReference: {fileID: 0}
+    - target: {fileID: -7361501123427272727, guid: 214e08cd5e5d74c458e2a81b7ec2c84c, type: 3}
+      propertyPath: maxComboStep
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: -7361501123427272727, guid: 214e08cd5e5d74c458e2a81b7ec2c84c, type: 3}
+      propertyPath: knockBackForce
+      value: 1000
+      objectReference: {fileID: 0}
+    - target: {fileID: -7361501123427272727, guid: 214e08cd5e5d74c458e2a81b7ec2c84c, type: 3}
+      propertyPath: particleManager
+      value: 
+      objectReference: {fileID: 1581457497}
+    - target: {fileID: -7361501123427272727, guid: 214e08cd5e5d74c458e2a81b7ec2c84c, type: 3}
+      propertyPath: enemyLayer.m_Bits
+      value: 1024
+      objectReference: {fileID: 0}
     - target: {fileID: 512311172252402974, guid: 214e08cd5e5d74c458e2a81b7ec2c84c, type: 3}
       propertyPath: m_Layer
       value: 7
@@ -4996,10 +5068,7 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 8422892626600249714, guid: 214e08cd5e5d74c458e2a81b7ec2c84c, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1244488693}
-    m_AddedComponents:
-    - targetCorrespondingSourceObject: {fileID: 8422892626600285392, guid: 214e08cd5e5d74c458e2a81b7ec2c84c, type: 3}
-      insertIndex: 3
-      addedObject: {fileID: 1669964699}
+    m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 214e08cd5e5d74c458e2a81b7ec2c84c, type: 3}
 --- !u!54 &1669964697 stripped
 Rigidbody:
@@ -5011,11 +5080,10 @@ Animator:
   m_CorrespondingSourceObject: {fileID: 8422892626592999198, guid: 214e08cd5e5d74c458e2a81b7ec2c84c, type: 3}
   m_PrefabInstance: {fileID: 1669964696}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &1669964699
+--- !u!114 &1669964699 stripped
 MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
+  m_CorrespondingSourceObject: {fileID: -7361501123427272727, guid: 214e08cd5e5d74c458e2a81b7ec2c84c, type: 3}
+  m_PrefabInstance: {fileID: 1669964696}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 760933429}
   m_Enabled: 1
@@ -5023,16 +5091,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3b7224e19dc5d6a419fbd51e20999a21, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  anim: {fileID: 1669964698}
-  comboResetTime: 1
-  baseDamage: 10
-  attackRange: 5
-  knockBackForce: 1000
-  enemyLayer:
-    serializedVersion: 2
-    m_Bits: 1024
-  attackDelay: 0.8
-  particleManager: {fileID: 1581457497}
 --- !u!1 &1894121339
 GameObject:
   m_ObjectHideFlags: 0

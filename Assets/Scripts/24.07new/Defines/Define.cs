@@ -11,6 +11,7 @@ public class Define
         RUNNING,
         ATTACK,
         JUMPING,
+        SLASH,
 
     };
 
