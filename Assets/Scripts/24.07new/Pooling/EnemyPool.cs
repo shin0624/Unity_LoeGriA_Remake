@@ -9,7 +9,7 @@ public class EnemyPool : MonoBehaviour
 {
     //에너미 생성, 파괴를 담당하는 스크립트
     [SerializeField] private GameObject enemyPrefab;//에너미 프리팹
-    [SerializeField] private int poolSize = 6;//풀 크기
+    [SerializeField] public int poolSize = 6;//풀 크기
     [SerializeField] private float spawnRange = 10.0f; // 랜덤 스폰 범위
     [SerializeField] private int maxAttempts = 6; // 유효 위치 탐색 최대 시도 횟수
     private Queue<GameObject> pool = new Queue<GameObject>();//에너미 오브젝트 풀
@@ -23,7 +23,7 @@ public class EnemyPool : MonoBehaviour
         }
         for(int i=0; i<poolSize; i++)
         {
-            GameObject enemy = Instantiate(enemyPrefab);//에너미 생성
+            GameObject enemy = Instantiate(enemyPrefab, transform);//에너미 생성
             enemy.SetActive(false);//비활성화
             pool.Enqueue(enemy);//풀에 추가
         }
@@ -42,7 +42,7 @@ public class EnemyPool : MonoBehaviour
         }
         else
         {
-            enemy = Instantiate(enemyPrefab);
+            enemy = Instantiate(enemyPrefab, transform);
         }
         Vector3 spawnPos = GetValidSpawnPosition();
         enemy.transform.position = spawnPos;
