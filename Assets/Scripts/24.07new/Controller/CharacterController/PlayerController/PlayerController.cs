@@ -72,7 +72,7 @@ public class PlayerController : MonoBehaviour
         }
         if(Input.GetMouseButtonDown(0))
         {
-            CallPlayerAttack(Define.PlayerState.ATTACK, "ATTACK", 0);//마우스 왼쪽 버튼 클릭 시, 공격 메서드 호출
+            CallPlayerAttack(Define.PlayerState.ATTACK, "ATTACK", 0);//마우스 왼쪽 버튼 클릭 시, 기본 공격 메서드 호출
         }
         if(Input.GetKeyDown(KeyCode.R))
         {
@@ -80,7 +80,7 @@ public class PlayerController : MonoBehaviour
         }
         if(Input.GetMouseButtonDown(1))
         {
-            CallPlayerAttack(Define.PlayerState.ATTACK02, "ATTACK02", 2);//마우스 오른쪽 버튼 클릭 시, 스킬 공격 메서드 호출
+            CallPlayerAttack(Define.PlayerState.ATTACK02, "ATTACK02", 2);//마우스 오른쪽 버튼 클릭 시,  기본공격2 메서드 호출
         }
     }
 

@@ -10,11 +10,6 @@ public class PlayerAttack : MonoBehaviour, IPlayerAttack
     //-----------플레이어 공격 관련 변수-------------
     [SerializeField] private Animator anim;
     public bool IsAttack{get; private set;}
-    //-----------콤보 공격 관련 변수-------------
-    private int comboStep = 0;//콤보가 이어지는 횟수
-    private float comboTimer = 0.0f;//콤보 연계를 위해 시간을 재는 타이머
-    public float comboResetTime = 1.0f;//콤보 연계 종료 타이머
-    [SerializeField] private int maxComboStep;//최대 콤보 횟수
     
     //-----------기본 공격 관련 변수-------------
     public float baseDamage = 10.0f;// 기본 공격 데미지
@@ -22,6 +17,10 @@ public class PlayerAttack : MonoBehaviour, IPlayerAttack
     [SerializeField] private float attackRange = 5.0f; // 공격 범위
     [SerializeField] private LayerMask enemyLayer; // 적 레이어
     [SerializeField] private float attackDelay = 0.5f; // 공격 딜레이
+
+    //-----------기본공격 2 관련 변수-------------
+    public float Attack02Damage = 15.0f;// 기본 공격 데미지
+    [SerializeField] private float Attack02KnockBackForce = 600.0f; // 넉백 힘
 
     //-----------스킬 1 공격 관련 변수-------------
     public float skillDamage01 = 20.0f;// 스킬 1 공격 데미지
@@ -37,7 +36,7 @@ public class PlayerAttack : MonoBehaviour, IPlayerAttack
         {
             case 0 : StartCoroutine(AttackRoutine(attackNumber, baseKnockBackForce, baseDamage)); break;//기본 공격 코루틴 실행
             case 1 : StartCoroutine(AttackRoutine(attackNumber, KnockBackForce01, skillDamage01)); break; // 스킬 1 공격 코루틴 실행
-            case 2 : StartCoroutine(AttackRoutine(attackNumber, 800, 15)); break;//기본 콤보 공격 코루틴 실행
+            case 2 : StartCoroutine(AttackRoutine(attackNumber, Attack02KnockBackForce, Attack02Damage)); break;//기본공격 2 코루틴 실행
         }
     }
 
