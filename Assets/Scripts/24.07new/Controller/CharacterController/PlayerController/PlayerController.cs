@@ -42,7 +42,6 @@ public class PlayerController : MonoBehaviour
         gameObject.layer = LayerMask.NameToLayer("Player");  // 플레이어 오브젝트를 Player 레이어로 설정
         
         Cursor.lockState = CursorLockMode.Locked;//마우스 커서를 화면 안에서 고정
-        Cursor.visible = false;//커서가 안보이게 설정
 
         rb = GetComponent<Rigidbody>();
         rb.freezeRotation = true;//리지드바디 회전 고정
@@ -78,6 +77,10 @@ public class PlayerController : MonoBehaviour
         if(Input.GetKeyDown(KeyCode.R))
         {
             CallPlayerAttack(Define.PlayerState.SLASH, "SLASH", 1);//R키 입력 시, 스킬 공격 메서드 호출
+        }
+        if(Input.GetMouseButtonDown(1))
+        {
+            CallPlayerAttack(Define.PlayerState.ATTACK02, "ATTACK02", 2);//마우스 오른쪽 버튼 클릭 시, 스킬 공격 메서드 호출
         }
     }
 

@@ -4,9 +4,10 @@ using UnityEngine;
 
 public class PlayerAttackParticleManager : MonoBehaviour
 {
-    [SerializeField] private ParticlePool attackParticlePool;//공격 파티클 풀
+    [SerializeField] private ParticlePool attackParticlePool;//기본공격 파티클 풀
     [SerializeField] private ParticlePool hitParticlePool;//히트 파티클 풀
     [SerializeField] private ParticlePool skillParticlePool01;//스킬1 파티클 풀
+    [SerializeField] private ParticlePool attackParticlePool02;//기본 콤보공격 파티클 풀
     private float StartDelay;//파티클 시스템 시작 딜레이. 공격 애니메이션 종료시간과 동기화.
     private ParticlePool pool;
 
@@ -16,6 +17,7 @@ public class PlayerAttackParticleManager : MonoBehaviour
         {
             case 0 : pool = attackParticlePool;StartDelay = 0.66f; break;//기본 공격일 경우
             case 1 : pool = skillParticlePool01; StartDelay = 1.18f; break;//스킬1 공격일 경우
+            case 2 : pool = attackParticlePool02; StartDelay = 0.8f; break;//기본 콤보 공격일 경우
         }
 
        if (pool != null)//파티클 풀이 존재하면

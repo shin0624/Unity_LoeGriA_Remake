@@ -40,10 +40,8 @@ public class SceneChangeManager : MonoBehaviour
     {
         if(other.CompareTag("Player"))//플레이어가 문 앞에 왔다면 ui 호출
         {
-            if(Cursor.lockState==CursorLockMode.Locked)
-            {
-                Cursor.lockState=CursorLockMode.None;
-            }
+            Cursor.visible = true;
+            Cursor.lockState = CursorLockMode.None;
             IsPlayerInRange = true;
             PopupUI.SetActive(true);
         }
@@ -52,10 +50,8 @@ public class SceneChangeManager : MonoBehaviour
     {
         if (other.CompareTag("Player"))//플레이어가 문 앞에서 떨어지면 ui 닫기
         {
-            if(Cursor.lockState!=CursorLockMode.None)
-            {
-                Cursor.lockState=CursorLockMode.Locked;
-            }
+            Cursor.visible = false;
+            Cursor.lockState = CursorLockMode.Locked;
             IsPlayerInRange = false;
             PopupUI.SetActive(false);
         }

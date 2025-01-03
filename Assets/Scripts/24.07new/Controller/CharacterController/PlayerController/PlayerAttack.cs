@@ -37,6 +37,7 @@ public class PlayerAttack : MonoBehaviour, IPlayerAttack
         {
             case 0 : StartCoroutine(AttackRoutine(attackNumber, baseKnockBackForce, baseDamage)); break;//기본 공격 코루틴 실행
             case 1 : StartCoroutine(AttackRoutine(attackNumber, KnockBackForce01, skillDamage01)); break; // 스킬 1 공격 코루틴 실행
+            case 2 : StartCoroutine(AttackRoutine(attackNumber, 800, 15)); break;//기본 콤보 공격 코루틴 실행
         }
     }
 
@@ -79,7 +80,7 @@ public class PlayerAttack : MonoBehaviour, IPlayerAttack
 
     private void CallAttackParticle(int attackNumber, Vector3 particlePosition, Quaternion particleRotation)//공격 파티클 호출 메서드
     {
-        particlePosition = transform.position + transform.forward * 1.5f; //파티클 위치를 검 위치로
+        particlePosition = transform.position + transform.up * 1.5f; //파티클 위치를 검 위치로
         particleRotation = transform.rotation;
         particleManager.PlayAttackParticle(attackNumber, particlePosition, particleRotation);//공격 파티클 재생
     }
@@ -99,7 +100,5 @@ public class PlayerAttack : MonoBehaviour, IPlayerAttack
     {
         anim.SetBool("IsAttack", false); // 공격 애니메이션 리셋
     }
-
-
 
 }
