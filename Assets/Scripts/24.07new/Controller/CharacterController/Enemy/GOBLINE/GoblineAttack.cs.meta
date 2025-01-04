@@ -1,0 +1,12 @@
+fileFormatVersion: 2
+guid: 831825e147f05da4c8b45628c9203b53
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences:
+  - goblineAttackData: {fileID: 11400000, guid: 672c7301b5a7ba54c8b6665da85b7e6c, type: 2}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
