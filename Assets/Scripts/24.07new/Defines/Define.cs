@@ -10,7 +10,9 @@ public class Define
         WALKING,
         RUNNING,
         ATTACK,
+        ATTACK02,
         JUMPING,
+        SLASH,
 
     };
 
