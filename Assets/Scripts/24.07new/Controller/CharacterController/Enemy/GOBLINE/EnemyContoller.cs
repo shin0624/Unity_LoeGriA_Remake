@@ -24,7 +24,7 @@ public class EnemyController : MonoBehaviour, IDamageable
     [SerializeField, Range(0f, 20.0f)] private float DetectionRange = 8.0f;// 플레이어 탐지 거리
     [SerializeField, Range(0f, 20.0f)] private float AttackRange = 2.0f;// 공격 가능 범위
     [SerializeField] private float hitRecoveryTime = 0.5f; // 피격 후 회복 시간
-    private List<Vector3> Path = new List<Vector3>();// A*알고리즘으로 계산된 경로를저장할 리스트
+    private List<Vector3> Path = new List<Vector3>();// 계산된 경로를저장할 리스트
     private int CurrentPathIndex = 0;// 에너미가 현재 이동중인 경로 지점의 인덱스. 처음에는 Path[0]으로 이동.
     private float DistanceToPlayer;//플레이어와의 거리를 저장할 변수
 
@@ -35,6 +35,10 @@ public class EnemyController : MonoBehaviour, IDamageable
     private AudioManager audioManager;
     private Coroutine hitCoroutine; // hit 상태 처리를 코루틴으로 수행
 
+    //---------------- 공격 호출 관련 변수 ----------------
+    [SerializeField] public GoblineAttackData goblineAttackData;//고블린 공격 데이터가 담긴 스크립터블 오브젝트
+    [SerializeField] private GoblineAttack goblineAttack;//고블린 공격 연산이 담긴 클래스
+ 
     private void Start()
     {
         managers = GameObject.Find("@Managers");
@@ -77,6 +81,8 @@ public class EnemyController : MonoBehaviour, IDamageable
     private void Update()//Hit상태는 코루틴에서 처리하니까 switch문에서 제외
     {
         DistanceToPlayer = Vector3.Distance(transform.position, Player.transform.position);//플레이어와 에너미 사이의 거리를 계산
+                        Debug.Log($"distance to player : {DistanceToPlayer}, attack range : {AttackRange}");
+
         switch (state)
         {
             case Define.EnemyState.IDLE:
@@ -122,6 +128,8 @@ public class EnemyController : MonoBehaviour, IDamageable
             if (DistanceToPlayer <= DetectionRange && state != Define.EnemyState.ATTACK)//탐지 범위 내에 플레이어가 존재하면 && 공격 상태가 아닐 때 추격을 시작한다.
             {
                 audioManager.PlaySound(roarSound);
+                Debug.Log($"distance to player : {DistanceToPlayer}, attack range : {AttackRange}");
+
                 SetState(Define.EnemyState.RUNNING, "RUNNING");
                 return;
             }
