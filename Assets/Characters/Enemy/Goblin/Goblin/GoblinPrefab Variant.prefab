@@ -832,6 +832,9 @@ PrefabInstance:
       addedObject: {fileID: 2884319899474710758}
     - targetCorrespondingSourceObject: {fileID: 100002, guid: 73b3e650b26458644b0371571d21e156, type: 3}
       insertIndex: -1
+      addedObject: {fileID: 4551391768789031570}
+    - targetCorrespondingSourceObject: {fileID: 100002, guid: 73b3e650b26458644b0371571d21e156, type: 3}
+      insertIndex: -1
       addedObject: {fileID: 5904142123928495278}
     - targetCorrespondingSourceObject: {fileID: 100002, guid: 73b3e650b26458644b0371571d21e156, type: 3}
       insertIndex: -1
@@ -958,7 +961,6 @@ MonoBehaviour:
   Agent: {fileID: 8452902591758675670}
   Anim: {fileID: 6881025942027333735}
   rb: {fileID: 1608780975167711084}
-  particleManager: {fileID: 0}
   hpInstance: {fileID: 5904142123928495278}
   ChaseRange: 20
   DetectionRange: 15
@@ -967,6 +969,22 @@ MonoBehaviour:
   roarSound: {fileID: 8300000, guid: a91f7cc8784a68b479d840b409a4cbe4, type: 3}
   hitSound: {fileID: 8300000, guid: 18f5c83d97764924495c816a776cc5da, type: 3}
   dieSound: {fileID: 8300000, guid: f69eda413372dbf4d9b49750f9ba3e92, type: 3}
+  goblineAttackData: {fileID: 11400000, guid: 672c7301b5a7ba54c8b6665da85b7e6c, type: 2}
+  goblineAttack: {fileID: 0}
+--- !u!114 &4551391768789031570
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8578846974691518191}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 831825e147f05da4c8b45628c9203b53, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  goblineAttackData: {fileID: 11400000, guid: 672c7301b5a7ba54c8b6665da85b7e6c, type: 2}
+  playerHP: {fileID: 0}
 --- !u!114 &5904142123928495278
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -984,7 +1002,6 @@ MonoBehaviour:
   hpBarUI: {fileID: 670574892627594764, guid: 232aafe6fd5d8f041b4b4bbf664eeb23, type: 3}
   hpBarPosition: {fileID: 5558657560250831601}
   respawnTime: 5
-  enemyPool: {fileID: 0}
 --- !u!82 &2332644029738951464
 AudioSource:
   m_ObjectHideFlags: 0

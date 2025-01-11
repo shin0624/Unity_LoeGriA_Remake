@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 149538141}
-  m_IndirectSpecularColor: {r: 0.121049516, g: 0.18679535, b: 0.33552128, a: 1}
+  m_IndirectSpecularColor: {r: 0.12079591, g: 0.18652903, b: 0.33532447, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -8342,9 +8342,21 @@ PrefabInstance:
       value: 2.5
       objectReference: {fileID: 0}
     - target: {fileID: 2884319899474710758, guid: e7c06ed7b5d9ee0449862f0e9f860461, type: 3}
+      propertyPath: goblineAttack
+      value: 
+      objectReference: {fileID: 1248445699109954447}
+    - target: {fileID: 2884319899474710758, guid: e7c06ed7b5d9ee0449862f0e9f860461, type: 3}
       propertyPath: particleManager
       value: 
       objectReference: {fileID: 1581457497}
+    - target: {fileID: 2884319899474710758, guid: e7c06ed7b5d9ee0449862f0e9f860461, type: 3}
+      propertyPath: goblineAttackData
+      value: 
+      objectReference: {fileID: 11400000, guid: 672c7301b5a7ba54c8b6665da85b7e6c, type: 2}
+    - target: {fileID: 4551391768789031570, guid: e7c06ed7b5d9ee0449862f0e9f860461, type: 3}
+      propertyPath: playerHP
+      value: 
+      objectReference: {fileID: 1581457498}
     - target: {fileID: 5904142123928495278, guid: e7c06ed7b5d9ee0449862f0e9f860461, type: 3}
       propertyPath: hpBarUI
       value: 
@@ -8422,6 +8434,17 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 45f1e9fda5cb5fd4eb278e7779ccee71, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &1248445699109954447 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 4551391768789031570, guid: e7c06ed7b5d9ee0449862f0e9f860461, type: 3}
+  m_PrefabInstance: {fileID: 1248445699109954442}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 831825e147f05da4c8b45628c9203b53, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1001 &3410904262248709810

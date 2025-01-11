@@ -22,7 +22,7 @@ public class EnemyController : MonoBehaviour, IDamageable
  //----------------- 범위, 거리 변수 -----------------
     [SerializeField, Range(0f, 20.0f)] private float ChaseRange = 12.0f;//플레이어 추격 가능 범위
     [SerializeField, Range(0f, 20.0f)] private float DetectionRange = 8.0f;// 플레이어 탐지 거리
-    [SerializeField, Range(0f, 20.0f)] private float AttackRange = 2.0f;// 공격 가능 범위
+    [SerializeField, Range(0f, 20.0f)] private float AttackRange = 6.0f;// 공격 가능 범위
     [SerializeField] private float hitRecoveryTime = 0.5f; // 피격 후 회복 시간
     private List<Vector3> Path = new List<Vector3>();// 계산된 경로를저장할 리스트
     private int CurrentPathIndex = 0;// 에너미가 현재 이동중인 경로 지점의 인덱스. 처음에는 Path[0]으로 이동.
@@ -37,7 +37,8 @@ public class EnemyController : MonoBehaviour, IDamageable
 
     //---------------- 공격 호출 관련 변수 ----------------
     [SerializeField] public GoblineAttackData goblineAttackData;//고블린 공격 데이터가 담긴 스크립터블 오브젝트
-    [SerializeField] private GoblineAttack goblineAttack;//고블린 공격 연산이 담긴 클래스
+    private GoblineAttack goblineAttack;//고블린 공격 연산이 담긴 클래스
+    private bool isAttacking = false;
  
     private void Start()
     {
@@ -76,13 +77,15 @@ public class EnemyController : MonoBehaviour, IDamageable
         {
             Anim = GetComponent<Animator>();
         }
+        if(goblineAttack==null)
+        {
+            goblineAttack = GetComponent<GoblineAttack>();
+        }
     }
 
     private void Update()//Hit상태는 코루틴에서 처리하니까 switch문에서 제외
     {
         DistanceToPlayer = Vector3.Distance(transform.position, Player.transform.position);//플레이어와 에너미 사이의 거리를 계산
-                        Debug.Log($"distance to player : {DistanceToPlayer}, attack range : {AttackRange}");
-
         switch (state)
         {
             case Define.EnemyState.IDLE:
@@ -160,14 +163,30 @@ public class EnemyController : MonoBehaviour, IDamageable
     {
         if (Agent.isOnNavMesh)
         {
-            Agent.isStopped = true;//공격 시 그 자리에서 멈춤
-            SetState(Define.EnemyState.ATTACK, "ATTACK");
+            if(!isAttacking)//공격 중이 아닐 때에만
+            {
+                StartCoroutine(AttackRoutine());//공격 연산을 코루틴으로 처리
+            }
+            
             if (DistanceToPlayer > AttackRange)// 공격범위를 벗어났다면
             {
                 UpdateChase();
                 return;
             }
         }
+    }
+
+    private IEnumerator AttackRoutine()//공격 코루틴
+    {
+        isAttacking = true;
+        SetState(Define.EnemyState.ATTACK, "ATTACK");
+        Agent.isStopped = true;//공격 시에는 에너미 이동 x
+        goblineAttack.PerformAttack(goblineAttackData);//공격 명령 전달
+        Debug.Log($"Damage : {goblineAttackData.goblineAttackDamage}");
+
+        float attackAnimLength = Anim.GetCurrentAnimatorStateInfo(0).length;//공격 애니메이션 종료까지 대기
+        yield return new WaitForSeconds(attackAnimLength);
+        isAttacking = false;//공격 중이 아님으로 변경
     }
 
     private void UpdateChase()

@@ -8,7 +8,6 @@ public class Managers : MonoBehaviour
     static Managers s_instance;//유일성 보장 가능한 싱글톤
     static Managers Instance { get { Init(); return s_instance; } }//외부에서 GetInstance 호출 시 Init()으로 널체크 후 객체를 만들고 반환하는 형태로 돌아갈 것
                                                                    //외부에서 Manager인스턴스를 쓰고자 할 때 사용하게 될 함수
-
     DataManager _data = new DataManager();
     public static DataManager Data { get { return Instance._data; } }
 
