@@ -26,6 +26,8 @@ public class PlayerSpawnManager : MonoBehaviour
                 break;
             case "Olenamento": SpawnPoint = GameObject.Find("OlenamentoSpawnPoint");
                 break;
+            case "Olenamento_WestField_BossStage": SpawnPoint = GameObject.Find("WestBossStageSpawnPoint");
+                break;  
         }
         if(SpawnPoint!=null)
         {
