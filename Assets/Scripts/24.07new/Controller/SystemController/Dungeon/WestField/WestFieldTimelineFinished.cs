@@ -21,7 +21,6 @@ public class WestFieldTimelineFinished : MonoBehaviour
     }
     void OnTimelineFinished(PlayableDirector pd)
     {
-        pd.gameObject.SetActive(false);
         timelineSettings.SetActive(false);
     }
 }

@@ -7,6 +7,14 @@ using UnityEngine.UI;
 
 public class LoadingScene : MonoBehaviour
 {
+    /*
+    250115 수정 : 씬 활성화와 sceneloaded 이벤트 호출 간 시점 불일치 떄문에 의도한 스폰 지점에 플레이어가 스폰되지 않음.
+
+    nextScene 값이 로딩 씬에서 설정되지만, PlayerSpawnManger는 이 정보를 알지 못한 채 동작해버림
+
+    -> 해결 방법 : LoadingScene과 PlayerSpawnManager 간 씬 활성화 시점 동기화. PlayerSpawnManager에서, 스폰 포인트 설정 지점을 OnEnable로 변경하고, LoadingScene에서 op.allowSceneActivation 설정 전에 동작을 추가하여
+    씬 활성화 후 명시적으로 활성화된 씬을 설정.
+    */
     public static string nextScene;
 
    [Header("Loading")]
@@ -27,9 +35,9 @@ public class LoadingScene : MonoBehaviour
         yield return null;
 
         AsyncOperation op = SceneManager.LoadSceneAsync(nextScene);//비동기 방식의 씬 로드를 사용하여, 씬 로드 중에도 다른 작업이 가능
-        //로딩의 진행정도 op를 AcyncOperation 형으로 반환
-        //LoadScene : 동기방식 -> 불러올 씬을 한꺼번에 불러오고 다른 모든 것이 불러오는 동안 기다리는 방식. 로드 중 다린 작업 불가
-        op.allowSceneActivation = false;
+        
+        op.allowSceneActivation = false;//로딩의 진행정도 op를 AcyncOperation 형으로 반환
+
         //op.allowSceneActivation --> 씬의 로딩이 끝나면 자동으로 불러온 씬으로 이동할 것인가를 묻는 옵션. false로 설정하여 로딩 완료 시 다음 씬으로 전환되지 않고 대기 -> true가 될 때 마무리 로딩 후 씬 전환
 
         float timer = 0.0f;
@@ -52,6 +60,12 @@ public class LoadingScene : MonoBehaviour
                 if (Progress.fillAmount == 1.0f)
                 {
                     op.allowSceneActivation = true;
+                    yield return new WaitUntil(()=> op.isDone);//비동기 씬 로드 작업 완료 후 활성화되기까지 대기-> Scenemanager.SetActiveScene 호출 시 씬이 활성화되지 않아 발생했던 문제 해결
+                    Scene activeScene = SceneManager.GetSceneByName(nextScene);//활성화된 씬 설정
+                    if(activeScene.IsValid())//액티브 씬 유효성 체크
+                    {
+                        SceneManager.SetActiveScene(activeScene);
+                    }
                     yield break;
                 }
             }

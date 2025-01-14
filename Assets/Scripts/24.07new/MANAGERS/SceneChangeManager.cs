@@ -21,7 +21,7 @@ public class SceneChangeManager : MonoBehaviour
      private Image YesButtonImage;
      private Image NoButtonImage;
 
-    [SerializeField] private string NextSceneName; // 다음 씬 이름
+    [SerializeField] private string NextSceneName = "Olenamento_WestField"; // 다음 씬 이름
     private bool IsPlayerInRange = false; // 플레이어가 게이트 범위 안에 있는지 확인
 
     void Start()

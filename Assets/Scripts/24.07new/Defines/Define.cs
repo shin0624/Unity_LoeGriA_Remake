@@ -29,6 +29,16 @@ public class Define
     
     };
 
+    public enum HobGoblineState
+    {
+        IDLE,
+        DEAD,
+        WALK,
+        RUN,
+        ATTACK,
+        DAMAGE,
+    };
+
     public enum Scene
     {
         Unknown,

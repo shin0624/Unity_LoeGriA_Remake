@@ -10,29 +10,53 @@ public class PlayerSpawnManager : MonoBehaviour
     [SerializeField] private GameObject Player;
     private GameObject SpawnPoint;
 
-    private void Awake()
+    private void Awake() 
     {
-        PlayerSpawnManager playerSpawnManager = Managers.SpawnManager;// 매니저 클래스의 싱글톤 인스턴스 참조
-        SceneManager.sceneLoaded += OnSceneLoaded;// 씬 로드 시 호출되도록 이벤트 등록
+        // 씬 전환 시 PlayerSpawnManager가 다른 씬으로 유지되도록 설정
+        DontDestroyOnLoad(gameObject);
 
+        // 씬 로드 시마다 스폰 포인트를 설정하도록 이벤트 구독
+        SceneManager.sceneLoaded += OnSceneLoaded;
     }
-
+    
     private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
-         // 각 씬마다 스폰되어야 할 위치 오브젝트를 찾는다.(Empty Object)
-        switch (scene.name)
+        // 새로운 씬이 로드될 때마다 스폰 포인트를 설정합니다.
+        SetSpawnPoint(scene.name);
+    }
+
+    private void SetSpawnPoint(string sceneName)
+    {
+        // 각 씬마다 스폰되어야 할 위치 오브젝트를 찾는다.(Empty Object)
+         switch (sceneName)
         {
-            case "Olenamento_WestField": SpawnPoint = GameObject.Find("WestFieldSpawnPoint");
+            case "Olenamento_WestField":
+                SpawnPoint = GameObject.Find("WestFieldSpawnPoint");
                 break;
-            case "Olenamento": SpawnPoint = GameObject.Find("OlenamentoSpawnPoint");
+            case "Olenamento":
+                SpawnPoint = GameObject.Find("OlenamentoSpawnPoint");
                 break;
-            case "Olenamento_WestField_BossStage": SpawnPoint = GameObject.Find("WestBossStageSpawnPoint");
-                break;  
+            case "Olenamento_WestField_BossStage":
+                SpawnPoint = GameObject.Find("WestBossStageSpawnPoint");
+                break;
+            default:
+                Debug.LogWarning($"[{sceneName}]에 대한 스폰 포인트가 정의되지 않았습니다.");
+                return;
         }
+
         if(SpawnPoint!=null)
         {
             Player.transform.position = SpawnPoint.transform.position;//스폰포인트가 존재하면 그 위치로 스폰시킨다.
             Debug.Log($"Spawn Point : {SpawnPoint.name}");
         }
+        else
+        {
+            Debug.LogWarning($"{sceneName}에서 스폰 포인트를 찾지 못함.");
+        }
+    }
+    private void OnDestroy()
+    {
+        // 씬이 변경될 때 이벤트 구독을 해제
+        SceneManager.sceneLoaded -= OnSceneLoaded;
     }
 }
