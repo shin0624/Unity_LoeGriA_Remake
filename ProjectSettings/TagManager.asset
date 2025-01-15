@@ -9,6 +9,8 @@ TagManager:
   - Enemy
   - WestGate
   - Sword
+  - WestBossStageSpawnPoint
+  - WestFieldSpawnPoint
   layers:
   - Default
   - TransparentFX
