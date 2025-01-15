@@ -72,7 +72,7 @@ public class SceneChangeManager : MonoBehaviour
     {
         GateAnimator.SetBool("DoorOpen", true);// 게이트 오픈 애니메이션 실행을 위해 true값을 넘겨준다.
         yield return new WaitForSeconds(GateAnimator.GetCurrentAnimatorStateInfo(0).length);// 애니메이션이 끝날 때 까지 대기 
-        SceneManager.LoadScene(NextSceneName);//씬 전환
+        LoadingScene.LoadScene(NextSceneName);//씬 전환
     }
 
 

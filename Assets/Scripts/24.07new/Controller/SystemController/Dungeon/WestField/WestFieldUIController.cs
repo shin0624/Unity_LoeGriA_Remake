@@ -60,13 +60,13 @@ public class WestFieldUIController : MonoBehaviour
     private void OnBossStageButtonClicked()//보스방 버튼 클릭 시
     {
         PopupUI.SetActive(false);
-        SceneManager.LoadScene(bossStageSceneName);
+        LoadingScene.LoadScene(bossStageSceneName);
     }
 
     private void OnNextTownButtonClicked()//다음 마을 버튼 클릭 시
     {
         PopupUI.SetActive(false);
-        SceneManager.LoadScene(nextTownSceneName);
+        LoadingScene.LoadScene(nextTownSceneName);
     }
 
     private void OnResumeButtonClicked()//돌아가기 버튼 클릭 시

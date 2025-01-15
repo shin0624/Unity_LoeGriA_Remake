@@ -23,10 +23,7 @@ public class GameScene : BaseScene
             {
                 if (i % 10000 == 0)
                     yield return null;//100000 번 반복에서 10000번째 마다 휴식 후 아래의 foreach문으로 값이 넘어감. foreach문에서 다음 동작을 결정한 뒤 수행 후 다시 코루틴으로 돌아옴
-            }
-           
-
-
+            }      
         }
     }
 
@@ -63,15 +60,6 @@ public class GameScene : BaseScene
 
     void Start()
     {
-        //if(PauseUI==null)
-        //{
-        //    Debug.Log($"Canvas : {PauseUI}");
-        //    if(PauseUI==null)
-        //    {
-        //        Debug.LogError("Pause UI Canvas not found!");
-        //        return;
-        //    }
-        //}
         PauseUI.gameObject.SetActive(false);
 
         QuitButtonImage = QuitButton.GetComponent<Image>();
@@ -109,6 +97,7 @@ public class GameScene : BaseScene
         {
             isPaused = true;
             PauseUI.gameObject.SetActive(true);
+            CursorVisible();
             Time.timeScale = 0f; // 게임을 일시 정지
         }
     }
@@ -120,6 +109,7 @@ public class GameScene : BaseScene
         {
             isPaused = false;
             PauseUI.gameObject.SetActive(false);
+            CursorInvisible();
             Time.timeScale = 1f; // 게임을 재개합니다.
         }
     }
@@ -172,6 +162,23 @@ public class GameScene : BaseScene
     public override void Clear()
     {
         Debug.Log("Game End");
+    }
+
+    private void CursorVisible()
+    {
+        if(Cursor.lockState == CursorLockMode.Locked && !Cursor.visible)
+        {
+            Cursor.lockState = CursorLockMode.None;
+            Cursor.visible = true;
+        }
+    }
+    private void CursorInvisible()
+    {
+        if(Cursor.lockState == CursorLockMode.None && Cursor.visible)
+        {
+            Cursor.lockState = CursorLockMode.Locked;
+            Cursor.visible = false;
+        }
     }
 
 }

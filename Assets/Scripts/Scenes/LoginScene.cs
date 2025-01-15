@@ -56,12 +56,12 @@ public class LoginScene : BaseScene
     void OnStartButtonClicked()
     {
         StartButtonImage.sprite = StartButtonClicked;
-        SceneManager.LoadScene("Olenamento");//각 버튼 클릭 시 Scenemanager.Loadscene이 아닌 로딩씬의 메서드를 호출.
+        LoadingScene.LoadScene("Olenamento");//각 버튼 클릭 시 Scenemanager.Loadscene이 아닌 로딩씬의 메서드를 호출.
     }
     void OnOptionButtonClicked()
     {
         OptionButtonImage.sprite = OptionButtonClicked;
-        SceneManager.LoadScene("Options");
+        LoadingScene.LoadScene("Options");
     }
     void OnQuitButtonClicked()
     {

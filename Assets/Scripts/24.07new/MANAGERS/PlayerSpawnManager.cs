@@ -28,7 +28,7 @@ public class PlayerSpawnManager : MonoBehaviour
 
     private void OnEnable() //씬 전환이 시작될 때 호출
     {
-        SceneManager.activeSceneChanged+=OnActiveSceneChanged;//씬 전환 직전에 플레이어를 비활성화하여 글리치 방지
+        SceneManager.activeSceneChanged+=OnActiveSceneChanged;//씬 전환 직전에 플레이어를 비활성화
     }
     private void OnDisable() 
     {
