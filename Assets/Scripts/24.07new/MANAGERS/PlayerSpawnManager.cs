@@ -6,15 +6,18 @@ using UnityEngine;
 public class PlayerSpawnManager : MonoBehaviour
 {
     //씬마다 스폰되는 플레이어 위치를 제어하기 위한 스크립트.
-
     [SerializeField] private GameObject Player;
     
     private void Awake()
     {
+        PlayerSpawnManager spawnManager = this;
+        DontDestroyOnLoad(gameObject);     
+        
         if(Player==null)
         {
             Player = GameObject.FindWithTag("Player");
         }
+
         SceneManager.sceneLoaded+=OnSceneLoaded;   
     }
 
@@ -45,6 +48,10 @@ public class PlayerSpawnManager : MonoBehaviour
             Player.transform.rotation = sp.transform.rotation;
             Debug.Log($"player.transform.position : {Player.transform.position}, sp position : {sp.transform.position}");
         }
+    }
+    private void OnDestroy() 
+    {
+        SceneManager.sceneLoaded-=OnSceneLoaded;
     }
 
 

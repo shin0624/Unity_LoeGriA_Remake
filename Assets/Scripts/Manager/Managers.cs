@@ -23,33 +23,17 @@ public class Managers : MonoBehaviour
     SceneManagerEX _scene = new SceneManagerEX();
     public static SceneManagerEX Scene { get { return Instance._scene; } }
 
-    //SoundManager _sound = new SoundManager();
-    //public static SoundManager Sound { get { return Instance._sound; } }
-
     UIManager ui = new UIManager();
     public static UIManager UI { get { return Instance.ui; } }//UI를 관리할 UIManager 연결
 
     AudioManager Ado = new AudioManager();
     public static AudioManager audioManager { get { return Instance.Ado; } } // 오디오 매니저를 관리할 audiomanager연결
 
-    PlayerSpawnManager playerSpawn = new PlayerSpawnManager();
-    public static PlayerSpawnManager SpawnManager { get { return Instance.playerSpawn; } }
-
-    //GetInstance()를 property형식으로 바꾸고자 하면
-    //public static Managers Instance { get{Init(); return s_instance;} } 로 바꾼 후 Player에서 Managers mg = Mangers.Instance 형식으로 호출하면 됨
-
+    PlayerSpawnManager spawnManager = new PlayerSpawnManager();
+    public static PlayerSpawnManager playerSpawn {get {return Instance.spawnManager;}}
 
     void Start()
     {
-        //instance = this;//인스턴스를 자기 자신(처음에 생성된 매니저스 컴포넌트)으로 채운다-->managers스크립트가 여러개 생성되었을 때 오류 발생(전역변수 instance에 각각의 manager스크립트의 instance 값이 덮어씌워져 버림
-        //-->해결법 : 
-
-        // GameObject go = GameObject.Find("@Managers");
-        // Managers mg = go.GetComponent<Managers>();//전역변수 instance에 저장되는 것은 @Managers 단 하나가 될 것
-
-        //-->만약 @Managers 오브젝트가 삭제되었다면?
-        //-->instance값에는 null이 들어가고, Player클래스에서 GetInstance()로 호출했을 때 null값이 전달됨 이 값을 다룰 경우 오류 발생
-        //instance값이 null이라면, 어떻게든 @Manangers를 찾거나 새로 만들어줘야함-->Init()으로
         Init();
     }
 
