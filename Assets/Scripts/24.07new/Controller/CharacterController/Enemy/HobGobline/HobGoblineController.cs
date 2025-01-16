@@ -15,14 +15,15 @@ public class HobGoblineController : MonoBehaviour
     private AudioManager audioManager;
     //---------------------------계산 변수----------------------------------
     private float distanceToPlayer;//플레이어와의 거리
-    private float walkingRange = 6.0f;// 플레이어와의 거리가 이 값에 다다를 때 까지 walking으로 플레이어를 쫒는다.
-    private float runningRange = 3.0f;//플레이어와의 거리가 이 값에 다다를 때 까지 running으로 플레이어를 쫒는다.
-    private float walkingSpeed = 4.0f;// 홉 고블린 속도
-    private float runningSpeed = 6.0f;//홉 고블린 running속도
+    private float walkingRange = 8.0f;// 플레이어와의 거리가 이 값에 다다를 때 까지 walking으로 플레이어를 쫒는다.
+    private float runningRange = 5.0f;//플레이어와의 거리가 이 값에 다다를 때 까지 running으로 플레이어를 쫒는다.
+    private float walkingSpeed = 2.0f;// 홉 고블린 속도
+    private float runningSpeed = 3.0f;//홉 고블린 running속도
 
     [SerializeField] private NavMeshAgent agent;
     [SerializeField] private Animator anim;
     [SerializeField] private Rigidbody rb;
+    [SerializeField] private HobGoblineAttack hobGoblineAttack;
     
     void Init()//초기화 및 할당
     {
@@ -34,6 +35,7 @@ public class HobGoblineController : MonoBehaviour
         agent ??= GetComponent<NavMeshAgent>();
         anim ??= GetComponent<Animator>();
         rb ??= GetComponent<Rigidbody>();
+        hobGoblineAttack??=GetComponent<HobGoblineAttack>();
         distanceToPlayer = 0.0f;
 
         isInitialized = true;
@@ -67,6 +69,7 @@ public class HobGoblineController : MonoBehaviour
                 break;
 
             case Define.HobGoblineState.ATTACK:
+                PerformAttack();
                 break;
 
             case Define.HobGoblineState.DAMAGE:
@@ -110,6 +113,18 @@ public class HobGoblineController : MonoBehaviour
         agent.SetDestination(player.transform.position);
     }
 
+    private void PerformAttack()
+    {
+        if(hobGoblineAttack!=null)
+        {
+            hobGoblineAttack.PerformAttack();
+        }
+        else
+        {
+            Debug.LogError("HobGoblineAttack Component is NULL");
+        }
+    }
+
 
     private void SetBool(Define.HobGoblineState NewState)// 상태변경 메서드. 홉 고블린의 상태전이 파라미터가 bool이므로 setstate를 setbool로 변경
     {
@@ -142,6 +157,7 @@ public class HobGoblineController : MonoBehaviour
 
             case Define.HobGoblineState.ATTACK:
                 anim.SetBool("ATTACK", true);
+                PerformAttack();// 공격 수행
                 break;
 
             case Define.HobGoblineState.DAMAGE:

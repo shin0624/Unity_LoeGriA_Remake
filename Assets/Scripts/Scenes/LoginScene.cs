@@ -48,11 +48,6 @@ public class LoginScene : BaseScene
         QuitButton.GetComponent<Button>().onClick.AddListener(OnQuitButtonClicked);
     }
 
-    private void Update()
-    {
-    
-    }
-
     void OnStartButtonClicked()
     {
         StartButtonImage.sprite = StartButtonClicked;

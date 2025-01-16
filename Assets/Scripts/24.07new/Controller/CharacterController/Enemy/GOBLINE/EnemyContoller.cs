@@ -85,7 +85,11 @@ public class EnemyController : MonoBehaviour, IDamageable
 
     private void Update()//Hit상태는 코루틴에서 처리하니까 switch문에서 제외
     {
+        if(Player==null) return;
+        else
+        {
         DistanceToPlayer = Vector3.Distance(transform.position, Player.transform.position);//플레이어와 에너미 사이의 거리를 계산
+        }
         switch (state)
         {
             case Define.EnemyState.IDLE:

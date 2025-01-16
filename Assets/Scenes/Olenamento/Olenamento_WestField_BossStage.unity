@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 602947285}
-  m_IndirectSpecularColor: {r: 0.12080194, g: 0.18660188, b: 0.3354959, a: 1}
+  m_IndirectSpecularColor: {r: 0.12079446, g: 0.18645737, b: 0.33528194, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -450,7 +450,6 @@ GameObject:
   m_Component:
   - component: {fileID: 363677123}
   - component: {fileID: 363677125}
-  - component: {fileID: 363677124}
   - component: {fileID: 363677126}
   m_Layer: 0
   m_Name: Camera2
@@ -474,14 +473,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 835907702}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!81 &363677124
-AudioListener:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 363677122}
-  m_Enabled: 1
 --- !u!20 &363677125
 Camera:
   m_ObjectHideFlags: 0
@@ -658,8 +649,8 @@ GameObject:
   m_Component:
   - component: {fileID: 402355226}
   - component: {fileID: 402355228}
-  - component: {fileID: 402355227}
   - component: {fileID: 402355229}
+  - component: {fileID: 402355230}
   m_Layer: 0
   m_Name: Camera
   m_TagString: Untagged
@@ -682,14 +673,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 835907702}
   m_LocalEulerAnglesHint: {x: -0.0000001364035, y: -0.0000004863098, z: 0.000000001818563}
---- !u!81 &402355227
-AudioListener:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 402355225}
-  m_Enabled: 1
 --- !u!20 &402355228
 Camera:
   m_ObjectHideFlags: 0
@@ -763,6 +746,14 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!81 &402355230
+AudioListener:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 402355225}
+  m_Enabled: 1
 --- !u!1 &433884085
 GameObject:
   m_ObjectHideFlags: 0
@@ -1370,6 +1361,25 @@ MonoBehaviour:
   agent: {fileID: 663415566}
   anim: {fileID: 663415562}
   rb: {fileID: 663415560}
+  hobGoblineAttack: {fileID: 663415570}
+--- !u!114 &663415570
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 663415559}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5ec04f12a5656d347b9c8d796b79cdb2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  attackDataArray:
+  - {fileID: 11400000, guid: 1deea905eaea4d943b7d596df23c32aa, type: 2}
+  - {fileID: 11400000, guid: 165346b9360e1b841bece04658de1c7b, type: 2}
+  - {fileID: 11400000, guid: d8f0b5f7ad9bfcb41b78dc7b9dcfa8b6, type: 2}
+  playerHP: {fileID: 0}
+  anim: {fileID: 663415562}
 --- !u!1001 &744009328
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -3011,6 +3021,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 165622, guid: b7f1dfc4e01f4a645a02f3816571583e, type: 3}
       insertIndex: 3
       addedObject: {fileID: 663415567}
+    - targetCorrespondingSourceObject: {fileID: 165622, guid: b7f1dfc4e01f4a645a02f3816571583e, type: 3}
+      insertIndex: 4
+      addedObject: {fileID: 663415570}
     - targetCorrespondingSourceObject: {fileID: 165622, guid: b7f1dfc4e01f4a645a02f3816571583e, type: 3}
       insertIndex: -1
       addedObject: {fileID: 663415564}

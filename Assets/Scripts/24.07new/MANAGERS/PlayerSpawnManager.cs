@@ -75,6 +75,10 @@ public class PlayerSpawnManager : MonoBehaviour
             case "Olenamento_WestField_BossStage":
                 spawnPoint = GameObject.Find("WestBossStageSpawnPoint");
                 break;
+                
+            case "Loading":
+                spawnPoint = GameObject.Find("LoadingPoint");
+                break;
         }
 
         if(spawnPoint != null && Player != null)//플레이어가 비활성화된 상태에서 위치를 설정한다.
