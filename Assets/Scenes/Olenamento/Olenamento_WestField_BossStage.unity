@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 602947285}
-  m_IndirectSpecularColor: {r: 0.12079446, g: 0.18645737, b: 0.33528194, a: 1}
+  m_IndirectSpecularColor: {r: 0.032576956, g: 0.045569338, b: 0.08077937, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -1380,6 +1380,22 @@ MonoBehaviour:
   - {fileID: 11400000, guid: d8f0b5f7ad9bfcb41b78dc7b9dcfa8b6, type: 2}
   playerHP: {fileID: 0}
   anim: {fileID: 663415562}
+--- !u!114 &663415571
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 663415559}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 50c5e09c3891cd14890ba5e93b9039d2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  hpBarUI: {fileID: 670574892627594764, guid: eaef85f3c9c46f944a803fe104af7ea2, type: 3}
+  hpBarPosition: {fileID: 1238227391}
+  maxHP: 80
+  currentHP: 80
 --- !u!1001 &744009328
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -2972,6 +2988,18 @@ PrefabInstance:
       value: BossHobGobline
       objectReference: {fileID: 0}
     - target: {fileID: 465622, guid: b7f1dfc4e01f4a645a02f3816571583e, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 0.2561744
+      objectReference: {fileID: 0}
+    - target: {fileID: 465622, guid: b7f1dfc4e01f4a645a02f3816571583e, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 0.20481487
+      objectReference: {fileID: 0}
+    - target: {fileID: 465622, guid: b7f1dfc4e01f4a645a02f3816571583e, type: 3}
+      propertyPath: m_LocalScale.z
+      value: 0.23334016
+      objectReference: {fileID: 0}
+    - target: {fileID: 465622, guid: b7f1dfc4e01f4a645a02f3816571583e, type: 3}
       propertyPath: m_LocalPosition.x
       value: 587.25
       objectReference: {fileID: 0}
@@ -3025,12 +3053,20 @@ PrefabInstance:
       insertIndex: 4
       addedObject: {fileID: 663415570}
     - targetCorrespondingSourceObject: {fileID: 165622, guid: b7f1dfc4e01f4a645a02f3816571583e, type: 3}
+      insertIndex: 5
+      addedObject: {fileID: 663415571}
+    - targetCorrespondingSourceObject: {fileID: 165622, guid: b7f1dfc4e01f4a645a02f3816571583e, type: 3}
       insertIndex: -1
       addedObject: {fileID: 663415564}
     - targetCorrespondingSourceObject: {fileID: 165622, guid: b7f1dfc4e01f4a645a02f3816571583e, type: 3}
       insertIndex: -1
       addedObject: {fileID: 663415566}
   m_SourcePrefab: {fileID: 100100000, guid: b7f1dfc4e01f4a645a02f3816571583e, type: 3}
+--- !u!4 &1238227391 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 8842509124856559885, guid: b7f1dfc4e01f4a645a02f3816571583e, type: 3}
+  m_PrefabInstance: {fileID: 1238227390}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1241157526
 GameObject:
   m_ObjectHideFlags: 0

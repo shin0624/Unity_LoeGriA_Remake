@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 4094271635154318719}
   - component: {fileID: 9164205722587370623}
   m_Layer: 5
-  m_Name: EnemyUI
+  m_Name: HobGoblineUI
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -28,7 +28,7 @@ RectTransform:
   m_GameObject: {fileID: 670574892627594764}
   m_LocalRotation: {x: 0, y: 1, z: 0, w: 0}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 0.60552, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 7971528789550735733}
@@ -130,7 +130,7 @@ RectTransform:
   m_GameObject: {fileID: 4700016285763270141}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 4.293}
-  m_LocalScale: {x: 0.013092423, y: 0.0016041581, z: 1}
+  m_LocalScale: {x: 0.071312085, y: 0.012404283, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 7451111170170260203}
@@ -225,6 +225,14 @@ PrefabInstance:
     - target: {fileID: 6383236518770863889, guid: 9d5c4417951761940b3459dfb01fecbd, type: 3}
       propertyPath: m_SizeDelta.y
       value: 50
+      objectReference: {fileID: 0}
+    - target: {fileID: 6383236518770863889, guid: 9d5c4417951761940b3459dfb01fecbd, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 0.033605002
+      objectReference: {fileID: 0}
+    - target: {fileID: 6383236518770863889, guid: 9d5c4417951761940b3459dfb01fecbd, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 0.024829077
       objectReference: {fileID: 0}
     - target: {fileID: 6383236518770863889, guid: 9d5c4417951761940b3459dfb01fecbd, type: 3}
       propertyPath: m_LocalPosition.x

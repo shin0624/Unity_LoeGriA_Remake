@@ -31,6 +31,14 @@ public class SkyBoxController : MonoBehaviour
             ToggleSkybox();
 
         }
+        if(dayLight==null)
+        {
+            dayLight = GameObject.Find("Directional Light");
+        }
+        if(nightLight==null)
+        {
+            nightLight = GameObject.Find("Directional Light");
+        }
     }
 
    private void ToggleSkybox()
